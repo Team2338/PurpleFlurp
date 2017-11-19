@@ -29,13 +29,8 @@
 
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.PIDCoefficients;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 /**
@@ -53,90 +48,27 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  */
 
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name="TeleOp", group="Iterative Opmode")
-@Disabled
-public class TeleOp extends OpMode
-{
+//@Disabled
+public class TeleOp extends OpMode {
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
 
-    private DcMotorEx frontLeft = null;
-    private DcMotorEx frontRight = null;
-    private DcMotorEx rearLeft = null;
-    private DcMotorEx rearRight = null;
-    private DcMotorEx lift = null;
-
-    private Servo leftServo = null;
-    private Servo rightServo = null;
-    private Servo arm = null;
-
-    private BNO055IMU imu = null;
-
-    private double maxSpeed = 0.9;
-    private double driveP = 0;
-    private double driveI = 0;
-    private double driveD = 0;
-    private double liftP = 0;
-    private double liftI = 0;
-    private double liftD = 0;
+    private Drivetrain drivetrain;
+    private Lift lift;
 
     private boolean padPressed = false;
-    private int liftPosition = 0;
 
     /*
      * Code to run ONCE when the driver hits INIT
      */
     @Override
     public void init() {
-        // Motor Setup
-        frontLeft  = (DcMotorEx) hardwareMap.get(DcMotor.class, "frontLeft");
-        frontRight  = (DcMotorEx) hardwareMap.get(DcMotor.class, "frontRight");
-        rearLeft  = (DcMotorEx) hardwareMap.get(DcMotor.class, "rearLeft");
-        rearRight  = (DcMotorEx) hardwareMap.get(DcMotor.class, "rearRight");
-        lift = (DcMotorEx) hardwareMap.get(DcMotor.class, "lift");
-
-        frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rearLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rearRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rearLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rearRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        frontLeft.setDirection(DcMotor.Direction.FORWARD);
-        frontRight.setDirection(DcMotor.Direction.FORWARD);
-        rearLeft.setDirection(DcMotor.Direction.FORWARD);
-        rearRight.setDirection(DcMotor.Direction.FORWARD);
-        lift.setDirection(DcMotor.Direction.FORWARD);
-
-        frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        rearLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        rearRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        lift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-        // Motor PID
-        PIDCoefficients drivePID = new PIDCoefficients(driveP, driveI, driveD);
-        frontLeft.setPIDCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, drivePID);
-        frontRight.setPIDCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, drivePID);
-        rearLeft.setPIDCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, drivePID);
-        rearRight.setPIDCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, drivePID);
-
-        PIDCoefficients currentDrivePID = frontLeft.getPIDCoefficients(DcMotor.RunMode.RUN_USING_ENCODER);
-
-        PIDCoefficients liftPID = new PIDCoefficients(liftP, liftI, liftD);
-        lift.setPIDCoefficients(DcMotor.RunMode.RUN_TO_POSITION, liftPID);
-
-        // Servo
-        leftServo = hardwareMap.get(Servo.class, "leftServo");
-        rightServo = hardwareMap.get(Servo.class, "rightServo");
-        arm = hardwareMap.get(Servo.class, "arm");
+        RobotMap.init(hardwareMap);
+        drivetrain = Drivetrain.getInstance();
+        lift = lift.getInstance();
 
         // Telemetry
         telemetry.addData("Status", "Initialized");
-        telemetry.addData("P, I, D (Drive)", "%.04f, %.04f, %.0f", currentDrivePID.p, currentDrivePID.i, currentDrivePID.d);
     }
 
     /*
@@ -160,40 +92,28 @@ public class TeleOp extends OpMode
     @Override
     public void loop() {
         // Movement
-        double x = gamepad1.left_stick_x;
-        double y = -gamepad1.left_stick_y;
-        double z = gamepad1.right_stick_x;
-
-        frontLeft.setPower(normalize(x + y + z) * maxSpeed);
-        frontRight.setPower(normalize(x - y + z) * maxSpeed);
-        rearLeft.setPower(normalize(-x + y + z) * maxSpeed);
-        rearRight.setPower(normalize(-x - y + z) * maxSpeed);
+        drivetrain.mecanumDrive(gamepad1.left_stick_x, -gamepad1.left_stick_y, gamepad1.right_stick_x);
 
         // Lift Mechanism
-        if (gamepad2.dpad_up && !padPressed) {
-            raiseLift();
+        if (gamepad2.dpad_up) {
+            lift.raise(padPressed);
             padPressed = true;
-        } else if (gamepad2.dpad_down && !padPressed) {
-            lowerLift();
+        } else if (gamepad2.dpad_down) {
+            lift.lower(padPressed);
             padPressed = true;
         } else if (!gamepad2.dpad_up && !gamepad2.dpad_down) {
             padPressed = false;
         }
 
-        lift.setPower(0.5);
-
         // Claw Mechanism
         if (gamepad2.left_bumper) {
-            leftServo.setPosition(0);
-            rightServo.setPosition(0.2);
+            lift.openClaw();
         } else if (gamepad2.right_bumper) {
-            leftServo.setPosition(0.22);
-            rightServo.setPosition(0);
+            lift.closeClaw();
         }
 
         // Telemetry
         telemetry.addData("Status", "Run Time: " + runtime.toString());
-
     }
 
     /*
@@ -203,34 +123,4 @@ public class TeleOp extends OpMode
     public void stop() {
     }
 
-    private void raiseLift() {
-        liftPosition += liftPosition != 2 ? 1 : 0;
-        moveLift();
-    }
-
-    private void lowerLift() {
-        liftPosition -= liftPosition != 0 ? 1 : 0;
-        moveLift();
-    }
-
-    private void moveLift() {
-        switch (liftPosition) {
-            case 0:
-                lift.setTargetPosition(0);
-            case 1:
-                lift.setTargetPosition(-1000);
-            case 2:
-                lift.setTargetPosition(-1800);
-        }
-    }
-
-    private double normalize(double number) {
-        if (number > 1) {
-            return 1;
-        } else if (number < -1) {
-            return -1;
-        } else {
-            return number;
-        }
-    }
 }
