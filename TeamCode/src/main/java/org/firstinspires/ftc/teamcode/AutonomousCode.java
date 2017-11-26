@@ -29,20 +29,14 @@
 
 package org.firstinspires.ftc.teamcode;
 
-import android.app.Activity;
 import android.graphics.Color;
-import android.view.View;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.hardware.ColorSensor;
-import com.qualcomm.robotcore.hardware.DistanceSensor;
 
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-
-import java.util.Locale;
+import org.firstinspires.ftc.lib.RobotMap;
+import org.firstinspires.ftc.subsystems.*;
+import org.firstinspires.ftc.subsystems.JewelArm;
 
 /*
  * This is an example LinearOpMode that shows how to use
@@ -55,7 +49,7 @@ import java.util.Locale;
  */
 @Autonomous(name = "Jewel", group = "Sensor")
 //@Disabled                            // Comment this out to add to the opmode list
-public class JewelAuto extends OpMode {
+public class AutonomousCode extends OpMode {
 
     /**
      * Note that the REV Robotics Color-Distance incorporates two sensors into one device.
@@ -74,8 +68,11 @@ public class JewelAuto extends OpMode {
      * to the target object.  Note that the distance sensor saturates at around 2" (5 cm).
      *
      */
-    ColorSensor sensorColor;
-    DistanceSensor sensorDistance;
+    private org.firstinspires.ftc.subsystems.JewelArm jewelArm;
+    private Lift lift;
+    private Drivetrain movement;
+
+    private boolean noideahowyourliftworks = false; //PLEASE PLEASSE PLEASEEE EXPLAIN LIFT; BOOLEAN DOES NOTHING: JUST TO SHOW MSG
 
     // hsvValues is an array that will hold the hue, saturation, and value information.
     float hsvValues[] = {0F, 0F, 0F};
@@ -92,11 +89,10 @@ public class JewelAuto extends OpMode {
      */
     @Override
     public void init() {
-        // get a reference to the color sensor.
-        sensorColor = hardwareMap.get(ColorSensor.class, "colorSensor");
-
-        // get a reference to the distance sensor that shares the same name.
-        sensorDistance = hardwareMap.get(DistanceSensor.class, "colorSensor");
+        RobotMap.init(hardwareMap);
+        jewelArm = JewelArm.getInstance();
+        lift = Lift.getInstance();
+        movement = Drivetrain.getInstance();
     }
 
     /*
@@ -111,6 +107,7 @@ public class JewelAuto extends OpMode {
      */
     @Override
     public void start() {
+        resetStartTime();
     }
 
     /*
@@ -121,27 +118,82 @@ public class JewelAuto extends OpMode {
         // convert the RGB values to HSV values.
         // multiply by the SCALE_FACTOR.
         // then cast it back to int (SCALE_FACTOR is a double)
-        Color.RGBToHSV((int) (sensorColor.red() * SCALE_FACTOR),
-                (int) (sensorColor.green() * SCALE_FACTOR),
-                (int) (sensorColor.blue() * SCALE_FACTOR),
+        Color.RGBToHSV((int) (jewelArm.colorSensor.red() * SCALE_FACTOR),
+                (int) (jewelArm.colorSensor.green() * SCALE_FACTOR),
+                (int) (jewelArm.colorSensor.blue() * SCALE_FACTOR),
                 hsvValues);
 
         // send the info back to driver station using telemetry function.
-        telemetry.addData("Distance (cm)",
-                String.format(Locale.US, "%.02f", sensorDistance.getDistance(DistanceUnit.CM)));
-        telemetry.addData("Alpha", sensorColor.alpha());
-        telemetry.addData("Red  ", sensorColor.red());
-        telemetry.addData("Green", sensorColor.green());
-        telemetry.addData("Blue ", sensorColor.blue());
+        //telemetry.addData("Distance (cm)",
+        //String.format(Locale.US, "%.02f", sensorDistance.getDistance(DistanceUnit.CM)));
+        telemetry.addData("Alpha", jewelArm.colorSensor.alpha());
+        telemetry.addData("Red  ", jewelArm.colorSensor.red());
+        telemetry.addData("Green", jewelArm.colorSensor.green());
+        telemetry.addData("Blue ", jewelArm.colorSensor.blue());
         telemetry.addData("Hue", hsvValues[0]);
-
         telemetry.update();
+
+        if (getRuntime() < 0.5) {
+            lift.closeClaw();
+        }
+
+        if (getRuntime() < 1) {
+            lift.raiseitup();               //SERIOUSLY, CHECK WHAT I DID!!!!!!!!
+        }
+
+        if (getRuntime() < 1.4) {
+            jewelArm.armDown();
+        }
+
+        if (hsvValues[0] > 130 && hsvValues[0] < 250) {
+
+            if (getRuntime() > 3 && getRuntime() < 3.2) {
+                movement.ForwardKnock();
+            }
+
+            if (getRuntime() > 3.3) {
+                movement.StoptheMotor();
+            }
+
+            if (getRuntime() > 3.4) {
+                jewelArm.armUp();
+            }
+
+            if (getRuntime() > 4.1 && getRuntime() < 4.3) {
+                movement.BackwardKnock();
+            }
+
+
+        } else {
+
+            if (getRuntime() > 3 && getRuntime() < 3.2) {
+                movement.BackwardKnock();
+            }
+
+            if (getRuntime() > 3.3) {
+                movement.StoptheMotor();
+            }
+
+            if (getRuntime() > 3.4) {
+                jewelArm.armUp();
+            }
+
+            if (getRuntime() > 4.1 && getRuntime() < 4.3) {
+                movement.ForwardKnock();
+            }
+        }
+
+        if (getRuntime() > 5 && getRuntime() < 5.8) {
+            movement.GetIntoBox();
+        }
     }
+
 
     /*
      * Code to run ONCE after the driver hits STOP
      */
     @Override
     public void stop() {
+
     }
 }

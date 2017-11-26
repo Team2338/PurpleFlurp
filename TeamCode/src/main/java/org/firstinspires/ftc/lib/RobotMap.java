@@ -19,7 +19,7 @@ public class RobotMap {
     public static DcMotor rearLeft;
     public static DcMotor rearRight;
 
-    // Drivetrain Sensors
+    // Drivetrain Sensors (Not used)
     public static BNO055IMU imu;
 
     // Lift Hardware

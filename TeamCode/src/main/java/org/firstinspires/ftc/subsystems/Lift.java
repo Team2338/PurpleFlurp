@@ -68,6 +68,10 @@ public class Lift {
         lift.setPower((position - lift.getCurrentPosition()) * kP);
     }
 
+    public void raiseitup() {
+        setTargetPosition(-500, 0.5);
+    }
+
     public void openClaw() {
         left.setPosition(0);
         right.setPosition(0.2);
