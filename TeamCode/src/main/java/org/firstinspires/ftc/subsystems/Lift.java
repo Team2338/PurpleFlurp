@@ -1,10 +1,10 @@
 package org.firstinspires.ftc.subsystems;
 
-import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.PIDCoefficients;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
 
+import org.firstinspires.ftc.lib.PIDController;
 import org.firstinspires.ftc.lib.RobotMap;
 
 /**
@@ -22,54 +22,59 @@ public class Lift {
         return instance;
     }
 
-    private DcMotorEx lift = RobotMap.lift;
-    private Servo left = RobotMap.leftServo;
-    private Servo right = RobotMap.rightServo;
-
     private final double kP = 0.001;
     private final double kI = 0;
     private final double kD = 0;
 
     private int position = 0;
 
+    private DcMotor lift = RobotMap.lift;
+    private Servo left = RobotMap.leftServo;
+    private Servo right = RobotMap.rightServo;
+
+    private PIDController liftPID = new PIDController(kP, kI, kD);
+
     private Lift() {
-        lift.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-        lift.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        lift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        lift.setDirection(DcMotorEx.Direction.FORWARD);
+        lift.setDirection(DcMotor.Direction.FORWARD);
 
-        lift.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
-
-        lift.setPIDCoefficients(DcMotorEx.RunMode.RUN_TO_POSITION, new PIDCoefficients(kP, kI, kD));
+        lift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 
-    public void raise(boolean isPressed) {
-         position += isPressed ? 0 : 1;
-         position = Range.clip(position, 0, 2);
+    public void update() {
+        lift.setPower(liftPID.getOutput(lift.getCurrentPosition()));
     }
 
-    public void lower(boolean isPressed) {
-        position -= isPressed ? 0 : 1;
+    public void raise() {
+        position += 1;
         position = Range.clip(position, 0, 2);
+        updateSetpoint();
     }
 
-    public void updateTargetPosition() {
+    public void lower() {
+        position -= 1;
+        position = Range.clip(position, 0, 2);
+        updateSetpoint();
+    }
+
+    public void updateSetpoint() {
         if (position == 0) {
-            setTargetPosition(0, 1);
+            setSetpoint(10);
         } else if (position == 1) {
-            setTargetPosition(-1000, 1);
+            setSetpoint(1000);
         } else if (position == 2) {
-            setTargetPosition(-1800, 1);
+            setSetpoint(1900);
         }
     }
 
-    public void setTargetPosition(int position, double power) {
-//        lift.setTargetPosition(position);
-        lift.setPower((position - lift.getCurrentPosition()) * kP);
+    public void setSetpoint(double setpoint) {
+        liftPID.setSetpoint(setpoint);
     }
 
-    public void raiseitup() {
-        setTargetPosition(-500, 0.5);
+    public int getPosition() {
+        return lift.getCurrentPosition();
     }
 
     public void openClaw() {

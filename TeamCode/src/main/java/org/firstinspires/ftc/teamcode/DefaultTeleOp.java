@@ -51,9 +51,9 @@ import org.firstinspires.ftc.subsystems.Lift;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="TeleOp", group="Iterative Opmode")
+@TeleOp(name="DefaultTeleOp", group="TeleOp")
 //@Disabled
-public class DefaultDrive extends OpMode {
+public class DefaultTeleOp extends OpMode {
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
 
@@ -100,16 +100,16 @@ public class DefaultDrive extends OpMode {
 
         // Lift Mechanism
         if (gamepad2.dpad_up) {
-            lift.raise(padPressed);
+            if (!padPressed) lift.raise();
             padPressed = true;
         } else if (gamepad2.dpad_down) {
-            lift.lower(padPressed);
+            if (!padPressed) lift.lower();
             padPressed = true;
         } else if (!gamepad2.dpad_up && !gamepad2.dpad_down) {
             padPressed = false;
         }
 
-        lift.updateTargetPosition();
+        lift.update();
 
         // Claw Mechanism
         if (gamepad2.left_bumper) {
@@ -120,6 +120,7 @@ public class DefaultDrive extends OpMode {
 
         // Telemetry
         telemetry.addData("Status", "Run Time: " + runtime.toString());
+        telemetry.addData("Lift Position: ", lift.getPosition());
     }
 
     /*

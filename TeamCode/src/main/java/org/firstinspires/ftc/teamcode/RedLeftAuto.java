@@ -35,8 +35,9 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.lib.RobotMap;
-import org.firstinspires.ftc.subsystems.*;
+import org.firstinspires.ftc.subsystems.Drivetrain;
 import org.firstinspires.ftc.subsystems.JewelArm;
+import org.firstinspires.ftc.subsystems.Lift;
 
 /*
  * This is an example LinearOpMode that shows how to use
@@ -47,9 +48,9 @@ import org.firstinspires.ftc.subsystems.JewelArm;
  * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list.
  */
-@Autonomous(name = "Jewel", group = "Sensor")
+@Autonomous(name = "RedLeftAuto", group = "Auto")
 //@Disabled                            // Comment this out to add to the opmode list
-public class AutonomousCode extends OpMode {
+public class RedLeftAuto extends OpMode {
 
     /**
      * Note that the REV Robotics Color-Distance incorporates two sensors into one device.
@@ -68,11 +69,12 @@ public class AutonomousCode extends OpMode {
      * to the target object.  Note that the distance sensor saturates at around 2" (5 cm).
      *
      */
-    private org.firstinspires.ftc.subsystems.JewelArm jewelArm;
+    private JewelArm jewelArm;
     private Lift lift;
     private Drivetrain movement;
 
-    private boolean noideahowyourliftworks = false; //PLEASE PLEASSE PLEASEEE EXPLAIN LIFT; BOOLEAN DOES NOTHING: JUST TO SHOW MSG
+    private boolean firstRun = true;
+    private boolean blue = false;
 
     // hsvValues is an array that will hold the hue, saturation, and value information.
     float hsvValues[] = {0F, 0F, 0F};
@@ -138,15 +140,25 @@ public class AutonomousCode extends OpMode {
         }
 
         if (getRuntime() < 1) {
-            lift.raiseitup();               //SERIOUSLY, CHECK WHAT I DID!!!!!!!!
+            lift.setSetpoint(1000);               //SERIOUSLY, CHECK WHAT I DID!!!!!!!!
         }
+
+        lift.update();
 
         if (getRuntime() < 1.4) {
             jewelArm.armDown();
         }
 
-        if (hsvValues[0] > 130 && hsvValues[0] < 250) {
+        if (hsvValues[0] > 130 && hsvValues[0] < 250 && firstRun && getRuntime() > 2) {
+            blue = true;
+            firstRun = false;
+        } else {
+            blue = false;
+            firstRun = false;
+        }
 
+
+        if (blue) {
             if (getRuntime() > 3 && getRuntime() < 3.2) {
                 movement.ForwardKnock();
             }
@@ -159,10 +171,13 @@ public class AutonomousCode extends OpMode {
                 jewelArm.armUp();
             }
 
-            if (getRuntime() > 4.1 && getRuntime() < 4.3) {
-                movement.BackwardKnock();
+            if (getRuntime() > 5 && getRuntime() < 5.7) {
+                movement.GetIntoBox();
             }
 
+            if (getRuntime() > 5.7) {
+                movement.StoptheMotor();
+            }
 
         } else {
 
@@ -178,13 +193,13 @@ public class AutonomousCode extends OpMode {
                 jewelArm.armUp();
             }
 
-            if (getRuntime() > 4.1 && getRuntime() < 4.3) {
-                movement.ForwardKnock();
+            if (getRuntime() > 5 && getRuntime() < 6.2) {
+                movement.RampUp();
             }
-        }
 
-        if (getRuntime() > 5 && getRuntime() < 5.8) {
-            movement.GetIntoBox();
+            if (getRuntime() > 6.2) {
+                movement.StoptheMotor();
+            }
         }
     }
 

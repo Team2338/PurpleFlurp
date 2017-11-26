@@ -63,7 +63,7 @@ public class Drivetrain {
         }
     }
 
-    public void ForwardKnock () {       //Makes the robot go forward at low power
+    public void BackwardKnock () {       //Makes the robot go backward at low power
         frontLeft.setPower(-0.4);
         frontRight.setPower(0.4);
         rearLeft.setPower(-0.4);
@@ -77,7 +77,7 @@ public class Drivetrain {
         rearRight.setPower(0);
     }
 
-    public void BackwardKnock () {      //Goes backward at low power
+    public void ForwardKnock () {      //Goes forward at low power
         frontRight.setPower(-0.4);
         frontLeft.setPower(0.4);
         rearRight.setPower(-0.4);
@@ -85,10 +85,17 @@ public class Drivetrain {
     }
 
     public void GetIntoBox () {     //Forward at a higher power than before
-        frontRight.setPower(0.6);
-        frontLeft.setPower(-0.6);
-        rearRight.setPower(0.6);
-        rearLeft.setPower(-0.6);
+        frontRight.setPower(-0.6);
+        frontLeft.setPower(0.6);
+        rearRight.setPower(-0.6);
+        rearLeft.setPower(0.6);
+    }
+
+    public void RampUp () {
+        frontLeft.setPower(0.8);
+        frontRight.setPower(-0.8);
+        rearLeft.setPower(0.8);
+        rearRight.setPower(-0.8);
     }
 
     //NOTE: THESE ARE ALL FOR FUTURE USE BELOW
