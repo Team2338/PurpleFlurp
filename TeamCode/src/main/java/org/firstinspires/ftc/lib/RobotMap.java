@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.lib;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.ColorSensor;
@@ -31,10 +31,10 @@ public class RobotMap {
     public static Servo arm;
 
     // Arm Sensors
-    public static ColorSensor colorSensor;
+    public static ColorSensor colorSensor; //farts
 
     public static void init(HardwareMap map) {
-        // Drivetrain Hardware
+        // Drivetrain HARDware
         frontLeft = map.get(DcMotor.class, "frontLeft");
         frontRight = map.get(DcMotor.class, "frontRight");
         rearLeft = map.get(DcMotor.class, "rearLeft");
@@ -43,12 +43,12 @@ public class RobotMap {
         // Drivetrain Sensors
         imu = map.get(BNO055IMU.class, "imu");
 
-        // Lift Hardware
+        // Lift HARDware
         lift = (DcMotorEx) map.get(DcMotor.class, "lift");
         leftServo = map.get(Servo.class, "leftServo");
         rightServo = map.get(Servo.class, "rightServo");
 
-        // Arm Hardware
+        // Arm HARDware
         arm = map.get(Servo.class, "arm");
 
         // Arm Sensors

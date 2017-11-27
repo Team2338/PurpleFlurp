@@ -29,9 +29,13 @@
 
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
+
+import org.firstinspires.ftc.lib.RobotMap;
+import org.firstinspires.ftc.subsystems.Drivetrain;
+import org.firstinspires.ftc.subsystems.Lift;
 
 /**
  * This file contains an example of an iterative (Non-Linear) "OpMode".
@@ -47,9 +51,9 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name="TeleOp", group="Iterative Opmode")
+@TeleOp(name="TeleOp", group="Iterative Opmode")
 //@Disabled
-public class TeleOp extends OpMode {
+public class DefaultDrive extends OpMode {
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
 
@@ -65,7 +69,7 @@ public class TeleOp extends OpMode {
     public void init() {
         RobotMap.init(hardwareMap);
         drivetrain = Drivetrain.getInstance();
-        lift = lift.getInstance();
+        lift = Lift.getInstance();
 
         // Telemetry
         telemetry.addData("Status", "Initialized");
@@ -104,6 +108,8 @@ public class TeleOp extends OpMode {
         } else if (!gamepad2.dpad_up && !gamepad2.dpad_down) {
             padPressed = false;
         }
+
+        lift.updateTargetPosition();
 
         // Claw Mechanism
         if (gamepad2.left_bumper) {

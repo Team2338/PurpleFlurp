@@ -55,7 +55,7 @@ import java.util.Locale;
  */
 @Autonomous(name = "Jewel", group = "Sensor")
 //@Disabled                            // Comment this out to add to the opmode list
-public class ColorSenseJewel extends OpMode {
+public class JewelAuto extends OpMode {
 
     /**
      * Note that the REV Robotics Color-Distance incorporates two sensors into one device.
@@ -86,11 +86,6 @@ public class ColorSenseJewel extends OpMode {
     // sometimes it helps to multiply the raw RGB values with a scale factor
     // to amplify/attentuate the measured values.
     final double SCALE_FACTOR = 255;
-
-    // get a reference to the RelativeLayout so we can change the background
-    // color of the Robot Controller app to match the hue detected by the RGB sensor.
-    int relativeLayoutId = hardwareMap.appContext.getResources().getIdentifier("RelativeLayout", "id", hardwareMap.appContext.getPackageName());
-    final View relativeLayout = ((Activity) hardwareMap.appContext).findViewById(relativeLayoutId);
 
     /*
      * Code to run ONCE when the driver hits INIT
@@ -140,15 +135,6 @@ public class ColorSenseJewel extends OpMode {
         telemetry.addData("Blue ", sensorColor.blue());
         telemetry.addData("Hue", hsvValues[0]);
 
-        // change the background color to match the color detected by the RGB sensor.
-        // pass a reference to the hue, saturation, and value array as an argument
-        // to the HSVToColor method.
-        relativeLayout.post(new Runnable() {
-            public void run() {
-                relativeLayout.setBackgroundColor(Color.HSVToColor(0xff, values));
-            }
-        });
-
         telemetry.update();
     }
 
@@ -157,10 +143,5 @@ public class ColorSenseJewel extends OpMode {
      */
     @Override
     public void stop() {
-        relativeLayout.post(new Runnable() {
-            public void run() {
-                relativeLayout.setBackgroundColor(Color.WHITE);
-            }
-        });
     }
 }
