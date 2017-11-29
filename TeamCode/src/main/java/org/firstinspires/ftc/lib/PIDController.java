@@ -380,6 +380,10 @@ public class PIDController {
 		return getOutput(actual, setpoint);
 	}
 
+	public boolean inTolerance(double tolerance) {
+		return Math.abs(setpoint - lastOutput) < tolerance;
+	}
+
 	/**
 	 * Resets the controller. This erases the I term buildup, and removes
 	 * D gain on the next loop.<br>

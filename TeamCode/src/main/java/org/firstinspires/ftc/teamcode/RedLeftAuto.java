@@ -33,20 +33,18 @@ import android.graphics.Color;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.lib.RobotMap;
 import org.firstinspires.ftc.subsystems.Drivetrain;
 import org.firstinspires.ftc.subsystems.JewelArm;
 import org.firstinspires.ftc.subsystems.Lift;
 
+import static java.lang.Thread.sleep;
+
 /*
- * This is an example LinearOpMode that shows how to use
- * the REV Robotics Color-Distance Sensor.
- *
- * It assumes the sensor is configured with the name "sensor_color_distance".
- *
- * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
- * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list.
+ * This is an Iterative Autonomous OpMode for the left position on the
+ * red alliance.
  */
 @Autonomous(name = "RedLeftAuto", group = "Auto")
 //@Disabled                            // Comment this out to add to the opmode list
@@ -73,14 +71,14 @@ public class RedLeftAuto extends OpMode {
     private Lift lift;
     private Drivetrain movement;
 
+    private ElapsedTime runtime = new ElapsedTime();
     private boolean firstRun = true;
     private boolean blue = false;
+    private int stage = 0;
+    private int lastStage = 0;
 
     // hsvValues is an array that will hold the hue, saturation, and value information.
     float hsvValues[] = {0F, 0F, 0F};
-
-    // values is a reference to the hsvValues array.
-    final float values[] = hsvValues;
 
     // sometimes it helps to multiply the raw RGB values with a scale factor
     // to amplify/attentuate the measured values.
@@ -201,6 +199,28 @@ public class RedLeftAuto extends OpMode {
                 movement.StoptheMotor();
             }
         }
+
+        if (stage != lastStage) runtime.reset();
+
+        if (stage == 0) {
+        	lift.closeClaw(); // Grab the block before moving
+        	stage = runtime.seconds() >= 0.5 ? 1 : 0; // Wait 0.5 seconds
+		} else if (stage == 1) {
+			lift.raise(); // Raise the lift with the now grabbed block
+        	stage = lift.inTolerance() ? 2 : 1; // Wait until the lift is within tolerance
+		} else if (stage == 2) {
+        	jewelArm.armDown(); // Lower color sensor
+        	stage = runtime.seconds() >= 0.5 ? 3 : 2; // Wait 0.5 seconds
+		} else if (stage == 3) {
+			stage = hsvValues[0] > 130 && hsvValues[0] < 250 ? 4 : 5; // Measure hue and determine stage
+		} else if (stage == 4) { // Blue detected
+
+		} else if (stage == 5) { // Red detected (Not blue)
+
+		}
+
+		lastStage = stage;
+        lift.update();
     }
 
 

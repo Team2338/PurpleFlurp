@@ -22,17 +22,17 @@ public class Lift {
         return instance;
     }
 
-    private final double kP = 0.001;
-    private final double kI = 0;
-    private final double kD = 0;
-
-    private int position = 0;
-
     private DcMotor lift = RobotMap.lift;
     private Servo left = RobotMap.leftServo;
     private Servo right = RobotMap.rightServo;
 
-    private PIDController liftPID = new PIDController(kP, kI, kD);
+	private final double kP = 0.001;
+	private final double kI = 0;
+	private final double kD = 0;
+
+    private PIDController pid = new PIDController(kP, kI, kD);
+
+	private int position = 0;
 
     private Lift() {
         lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -44,8 +44,21 @@ public class Lift {
     }
 
     public void update() {
-        lift.setPower(liftPID.getOutput(lift.getCurrentPosition()));
+    	lift.setPower(pid.getOutput(lift.getCurrentPosition()));
     }
+
+	public void setSetpoint(double setpoint) {
+    	pid.setSetpoint(setpoint);
+    }
+
+	public double getPosition() {
+    	return lift.getCurrentPosition();
+    }
+
+	public boolean inTolerance() {
+    	return pid.inTolerance(5);
+    }
+
 
     public void raise() {
         position += 1;
@@ -67,14 +80,6 @@ public class Lift {
         } else if (position == 2) {
             setSetpoint(1900);
         }
-    }
-
-    public void setSetpoint(double setpoint) {
-        liftPID.setSetpoint(setpoint);
-    }
-
-    public int getPosition() {
-        return lift.getCurrentPosition();
     }
 
     public void openClaw() {
