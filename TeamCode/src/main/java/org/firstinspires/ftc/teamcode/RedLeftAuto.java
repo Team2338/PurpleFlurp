@@ -75,7 +75,7 @@ public class RedLeftAuto extends OpMode {
     private boolean firstRun = true;
     private boolean blue = false;
     private int stage = 0;
-    private int lastStage = 0;
+    private int lastStage = -1;
 
     // hsvValues is an array that will hold the hue, saturation, and value information.
     float hsvValues[] = {0F, 0F, 0F};
@@ -131,96 +131,115 @@ public class RedLeftAuto extends OpMode {
         telemetry.addData("Green", jewelArm.colorSensor.green());
         telemetry.addData("Blue ", jewelArm.colorSensor.blue());
         telemetry.addData("Hue", hsvValues[0]);
+        telemetry.addData("Stage", stage);
+        telemetry.addData("Position", movement.getPosition3());
         telemetry.update();
 
-        if (getRuntime() < 0.5) {
-            lift.closeClaw();
-        }
+//        if (getRuntime() < 0.5) {
+//            lift.closeClaw();
+//        }
+//
+//        if (getRuntime() < 1) {
+//            lift.setSetpoint(1000);               //SERIOUSLY, CHECK WHAT I DID!!!!!!!!
+//        }
+//
+//        lift.update();
+//
+//        if (getRuntime() < 1.4) {
+//            jewelArm.armDown();
+//        }
+//
+//        if (hsvValues[0] > 130 && hsvValues[0] < 250 && firstRun && getRuntime() > 2) {
+//            blue = true;
+//            firstRun = false;
+//        } else {
+//            blue = false;
+//            firstRun = false;
+//        }
+//
+//
+//        if (blue) {
+//            if (getRuntime() > 3 && getRuntime() < 3.2) {
+//                movement.ForwardKnock();
+//            }
+//
+//            if (getRuntime() > 3.3) {
+//                movement.StoptheMotor();
+//            }
+//
+//            if (getRuntime() > 3.4) {
+//                jewelArm.armUp();
+//            }
+//
+//            if (getRuntime() > 5 && getRuntime() < 5.7) {
+//                movement.GetIntoBox();
+//            }
+//
+//            if (getRuntime() > 5.7) {
+//                movement.StoptheMotor();
+//            }
+//
+//        } else {
+//
+//            if (getRuntime() > 3 && getRuntime() < 3.2) {
+//                movement.BackwardKnock();
+//            }
+//
+//            if (getRuntime() > 3.3) {
+//                movement.StoptheMotor();
+//            }
+//
+//            if (getRuntime() > 3.4) {
+//                jewelArm.armUp();
+//            }
+//
+//            if (getRuntime() > 5 && getRuntime() < 6.2) {
+//                movement.RampUp();
+//            }
+//
+//            if (getRuntime() > 6.2) {
+//                movement.StoptheMotor();
+//            }
+//        }
 
-        if (getRuntime() < 1) {
-            lift.setSetpoint(1000);               //SERIOUSLY, CHECK WHAT I DID!!!!!!!!
-        }
-
-        lift.update();
-
-        if (getRuntime() < 1.4) {
-            jewelArm.armDown();
-        }
-
-        if (hsvValues[0] > 130 && hsvValues[0] < 250 && firstRun && getRuntime() > 2) {
-            blue = true;
-            firstRun = false;
-        } else {
-            blue = false;
-            firstRun = false;
-        }
-
-
-        if (blue) {
-            if (getRuntime() > 3 && getRuntime() < 3.2) {
-                movement.ForwardKnock();
-            }
-
-            if (getRuntime() > 3.3) {
-                movement.StoptheMotor();
-            }
-
-            if (getRuntime() > 3.4) {
-                jewelArm.armUp();
-            }
-
-            if (getRuntime() > 5 && getRuntime() < 5.7) {
-                movement.GetIntoBox();
-            }
-
-            if (getRuntime() > 5.7) {
-                movement.StoptheMotor();
-            }
-
-        } else {
-
-            if (getRuntime() > 3 && getRuntime() < 3.2) {
-                movement.BackwardKnock();
-            }
-
-            if (getRuntime() > 3.3) {
-                movement.StoptheMotor();
-            }
-
-            if (getRuntime() > 3.4) {
-                jewelArm.armUp();
-            }
-
-            if (getRuntime() > 5 && getRuntime() < 6.2) {
-                movement.RampUp();
-            }
-
-            if (getRuntime() > 6.2) {
-                movement.StoptheMotor();
-            }
-        }
 
         if (stage != lastStage) runtime.reset();
+        lastStage = stage;
 
         if (stage == 0) {
         	lift.closeClaw(); // Grab the block before moving
-        	stage = runtime.seconds() >= 0.5 ? 1 : 0; // Wait 0.5 seconds
+        	stage = runtime.seconds() >= 1.5 ? 1 : 0; // Wait 0.5 seconds
 		} else if (stage == 1) {
-			lift.raise(); // Raise the lift with the now grabbed block
-        	stage = lift.inTolerance() ? 2 : 1; // Wait until the lift is within tolerance
+			lift.setSetpoint(1000); // Raise the lift with the now grabbed block
+        	stage = runtime.seconds() >= 1.5 ? 2 : 1; // Wait until the lift is within tolerance
 		} else if (stage == 2) {
         	jewelArm.armDown(); // Lower color sensor
         	stage = runtime.seconds() >= 0.5 ? 3 : 2; // Wait 0.5 seconds
 		} else if (stage == 3) {
 			stage = hsvValues[0] > 130 && hsvValues[0] < 250 ? 4 : 5; // Measure hue and determine stage
 		} else if (stage == 4) { // Blue detected
-
+            movement.setSetpoint(100);
+            movement.updateDrive();
+            stage = movement.inDriveTolerance() ? 6 : 4;
 		} else if (stage == 5) { // Red detected (Not blue)
+            movement.setSetpoint(-100);
+            movement.updateDrive();
+            stage = movement.inDriveTolerance() ? 7 : 5;
+		} else if (stage == 6) { // Blue detected
+            jewelArm.armUp();
+            stage = runtime.seconds() >= 0.5 ? 8 : 6;
+        } else if (stage == 7) { // Red detected
+            jewelArm.armUp();
+            stage = runtime.seconds() >= 0.5 ? 9 : 7;
+        } else if (stage == 8) { //Blue detected
+            movement.setSetpoint(700);
+        } else if (stage == 9) {
+            movement.setSetpoint(1500);
+        }
 
-		}
-
-		lastStage = stage;
         lift.update();
+//        movement.updateDrive();
+//        movement.updateRotate();
     }
 
 

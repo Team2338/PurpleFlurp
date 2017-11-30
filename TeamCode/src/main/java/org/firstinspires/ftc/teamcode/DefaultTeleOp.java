@@ -121,6 +121,10 @@ public class DefaultTeleOp extends OpMode {
         // Telemetry
         telemetry.addData("Status", "Run Time: " + runtime.toString());
         telemetry.addData("Lift Position: ", lift.getPosition());
+        telemetry.addData("frontLeft", drivetrain.getPosition());
+        telemetry.addData("frontRight", drivetrain.getPosition2());
+        telemetry.addData("rearRight", drivetrain.getPosition4());
+        telemetry.addData("rearLeft", drivetrain.getPosition3());
     }
 
     /*

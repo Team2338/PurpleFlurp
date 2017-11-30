@@ -26,7 +26,7 @@ public class Lift {
     private Servo left = RobotMap.leftServo;
     private Servo right = RobotMap.rightServo;
 
-	private final double kP = 0.001;
+	private final double kP = 0.003;
 	private final double kI = 0;
 	private final double kD = 0;
 
@@ -56,7 +56,7 @@ public class Lift {
     }
 
 	public boolean inTolerance() {
-    	return pid.inTolerance(5);
+    	return pid.inTolerance(50);
     }
 
 

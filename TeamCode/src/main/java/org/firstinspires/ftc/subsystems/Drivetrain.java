@@ -29,7 +29,7 @@ public class Drivetrain {
 
     private BNO055IMU imu = RobotMap.imu;
 
-	private final double driveP = 0.001;
+	private final double driveP = 0.01;
 	private final double driveI = 0;
 	private final double driveD = 0;
 
@@ -63,7 +63,7 @@ public class Drivetrain {
     }
 
     public void updateDrive() {
-    	double y = drivePID.getOutput(frontLeft.getCurrentPosition());
+        double y = drivePID.getOutput(frontLeft.getPortNumber());
     	mecanumDrive(0, y, 0);
 	}
 
@@ -77,9 +77,26 @@ public class Drivetrain {
     	drivePID.setSetpoint(setpoint);
     }
 
+    public void rotate(double degrees) {
+        rotatePID.setSetpoint(degrees);
+    }
+
     public double getPosition() {
-    	return frontLeft.getCurrentPosition();
+        return (rearLeft.getCurrentPosition() - rearRight.getCurrentPosition()) / 2;
 	}
+
+	public double getPosition2() {
+        return frontRight.getCurrentPosition();
+    }
+
+    public double getPosition3() {
+        return rearLeft.getCurrentPosition();
+    }
+
+    public double getPosition4() {
+        return rearRight.getCurrentPosition();
+    }
+
 
 	public boolean inDriveTolerance() {
     	return drivePID.inTolerance(5);
@@ -133,33 +150,6 @@ public class Drivetrain {
         frontRight.setPower(-0.8);
         rearLeft.setPower(0.8);
         rearRight.setPower(-0.8);
-    }
-
-    //NOTE: THESE ARE ALL FOR FUTURE USE BELOW
-
-    //This moves the robot a little bit to the left before turning
-    public void giveClearance () {
-
-    }
-
-    //This is supposed to turn the robot 90 degrees so it can place the glyph in the box
-    public void Turn () {
-
-    }
-
-    //this is to move the robot forward towards the glyph
-    public void moveForward () {
-
-    }
-
-    //After releasing the claw by using LIFT, make robot move back near center
-    public void moveBack () {
-
-    }
-
-    //Turn around the robot to set up for Driver Controlled Period
-    public void turnAround () {
-
     }
 
     public void resetEncoders() {
