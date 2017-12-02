@@ -143,10 +143,10 @@ public class RedRightAuto extends OpMode {
 			stage = hsvValues[0] > 120 && hsvValues[0] < 250 ? 4 : 5; // Measure hue and determine stage
 		} else if (stage == 4) { // Blue detected
             movement.ForwardKnock();
-            stage = runtime.seconds() >= 0.12 ? 6 : 4;
+            stage = runtime.seconds() >= 0.22 ? 6 : 4;
 		} else if (stage == 5) { // Red detected (Not blue)
             movement.BackwardKnock();
-            stage = runtime.seconds() >= 0.12 ? 7 : 5;
+            stage = runtime.seconds() >= 0.22 ? 7 : 5;
 		} else if (stage == 6) { // Blue detected
             movement.StoptheMotor();
             jewelArm.armUp();
@@ -157,10 +157,10 @@ public class RedRightAuto extends OpMode {
             stage = runtime.seconds() >= 0.7 ? 9 : 7;
         } else if (stage == 8) { //Blue detected
             movement.GetIntoBoxF();
-            stage = runtime.seconds() >= 0.55 ? 10 : 8;
+            stage = runtime.seconds() >= 0.5 ? 10 : 8;
         } else if (stage == 9) { //Red detected
             movement.RampUp();
-            stage = runtime.seconds() >= 0.9 ? 11 : 9;
+            stage = runtime.seconds() >= 0.65 ? 11 : 9;
         } else if (stage == 10) { //Blue detected
             movement.StoptheMotor();
             stage = runtime.seconds() >= 0.5 ? 12 : 10;
@@ -168,8 +168,8 @@ public class RedRightAuto extends OpMode {
             movement.StoptheMotor();
             stage = runtime.seconds() >= 0.5 ? 12 : 11;
         } else if (stage == 12) { //Turn maybe?
-            movement.TurnRight(); //FIX THE STRAFE AHHHHHHHHHH. This probably won't work...
-            stage = runtime.seconds() >= 1 ? 13 : 12;
+            movement.TurnRightF(); //FIX THE STRAFE AHHHHHHHHHH. This probably won't work...
+            stage = runtime.seconds() >= 1.3 ? 13 : 12;
         } else if (stage == 13) {
             movement.StoptheMotor();
             stage = runtime.seconds() >= 0.3 ? 14 : 13;

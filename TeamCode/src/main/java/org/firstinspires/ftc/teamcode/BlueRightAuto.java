@@ -142,10 +142,10 @@ public class BlueRightAuto extends OpMode {
 			stage = hsvValues[0] > 120 && hsvValues[0] < 250 ? 4 : 5; // Measure hue and determine stage
 		} else if (stage == 4) { // Blue detected
             movement.BackwardKnock();
-            stage = runtime.seconds() >= 0.12 ? 6 : 4;
+            stage = runtime.seconds() >= 0.22 ? 6 : 4;
 		} else if (stage == 5) { // Red detected (Not blue)
             movement.ForwardKnock();
-            stage = runtime.seconds() >= 0.12 ? 7 : 5;
+            stage = runtime.seconds() >= 0.22 ? 7 : 5;
 		} else if (stage == 6) { // Blue detected
             movement.StoptheMotor();
             jewelArm.armUp();
@@ -167,8 +167,8 @@ public class BlueRightAuto extends OpMode {
             movement.StoptheMotor();
             stage = runtime.seconds() >= 0.5 ? 12 : 11;
         } else if (stage == 12) { //Turn maybe?
-            movement.TurnRight();
-            stage = runtime.seconds() >= 0.4 ? 13 : 12;
+            movement.TurnLeftB();
+            stage = runtime.seconds() >= 0.6 ? 13 : 12;
         } else if (stage == 13) {
             movement.StoptheMotor();
             stage = runtime.seconds() >= 0.2 ? 14 : 13;
@@ -176,6 +176,7 @@ public class BlueRightAuto extends OpMode {
             movement.TurnLeft();
             stage = runtime.seconds() >= 0.2 ? 15 : 14;
         } else if (stage == 15) {
+            movement.StoptheMotor();
             lift.setSetpoint(10);
         }
 

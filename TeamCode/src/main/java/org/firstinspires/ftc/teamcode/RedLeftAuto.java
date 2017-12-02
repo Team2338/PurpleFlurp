@@ -145,10 +145,10 @@ public class RedLeftAuto extends OpMode {
 			stage = hsvValues[0] > 120 && hsvValues[0] < 250 ? 4 : 5; // Measure hue and determine stage
 		} else if (stage == 4) { // Blue detected
             movement.ForwardKnock();
-            stage = runtime.seconds() >= 0.12 ? 6 : 4;
+            stage = runtime.seconds() >= 0.22 ? 6 : 4;
 		} else if (stage == 5) { // Red detected (Not blue)
             movement.BackwardKnock();
-            stage = runtime.seconds() >= 0.12 ? 7 : 5;
+            stage = runtime.seconds() >= 0.22 ? 7 : 5;
 		} else if (stage == 6) { // Blue detected
             movement.StoptheMotor();
             jewelArm.armUp();
