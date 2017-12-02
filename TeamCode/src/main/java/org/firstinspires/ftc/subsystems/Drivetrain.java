@@ -117,6 +117,7 @@ public class Drivetrain {
         rearRight.setPower(normalize(-x - y + rotation) * maxSpeed);
     }
 
+    //LEFT IS POSITIVE, RIGHT IS NEGATIVE TO GO FORWARD
     public void BackwardKnock () {       //Makes the robot go backward at low power
         frontLeft.setPower(-0.4);
         frontRight.setPower(0.4);
@@ -138,18 +139,66 @@ public class Drivetrain {
         rearLeft.setPower(0.4);
     }
 
-    public void GetIntoBox () {     //Forward at a higher power than before
+    public void GetIntoBoxF () {     //Forward at a higher power than before
         frontRight.setPower(-0.6);
         frontLeft.setPower(0.6);
         rearRight.setPower(-0.6);
         rearLeft.setPower(0.6);
     }
 
-    public void RampUp () {
+    public void GetIntoBoxB () { //Backward Version
+        frontRight.setPower(0.6);
+        frontLeft.setPower(-0.6);
+        rearLeft.setPower(-0.6);
+        rearRight.setPower(0.6);
+    }
+
+    public void RampUp () {  //Extreme Power
         frontLeft.setPower(0.8);
         frontRight.setPower(-0.8);
         rearLeft.setPower(0.8);
         rearRight.setPower(-0.8);
+    }
+
+    public void RampBack () { //Opposite of RampUp
+        frontLeft.setPower(-0.8);
+        frontRight.setPower(0.8);
+        rearRight.setPower(0.8);
+        rearLeft.setPower(-0.8);
+    }
+
+    public void StrafeLeft () { //CHANGE THESE QUICKLY
+        frontLeft.setPower(0.8);
+        rearRight.setPower(0.8);
+        frontRight.setPower(-0.8);
+        rearLeft.setPower(-0.8);
+    }
+
+    public void StrafeRight () { // I don't even need this so ignore it
+        frontLeft.setPower(-0.4);
+        rearRight.setPower(-0.4);
+        frontRight.setPower(0.4);
+        rearLeft.setPower(0.4);
+    }
+
+    public void TurnRight () { //TURNS RIGHT WHEELS BACKWARDS
+        frontRight.setPower(0.5);
+        rearRight.setPower(0.5);
+    }
+
+    public void TurnLeft () { //TURNS LEFT FORWARDS
+        frontLeft.setPower(0.5);
+        rearLeft.setPower(0.5);
+    }
+
+    public void TurnLeftB () { //Turns LEFT BACKWARDS
+        rearRight.setPower(-0.5);
+        rearLeft.setPower(-0.5);
+    }
+
+    public void TurnRightF () { //Turns RIGHT FORWARDS
+        rearRight.setPower(-0.5);
+        frontRight.setPower(-0.5);
     }
 
     public void resetEncoders() {

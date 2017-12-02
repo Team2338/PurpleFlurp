@@ -40,15 +40,13 @@ import org.firstinspires.ftc.subsystems.Drivetrain;
 import org.firstinspires.ftc.subsystems.JewelArm;
 import org.firstinspires.ftc.subsystems.Lift;
 
-import static java.lang.Thread.sleep;
-
 /*
  * This is an Iterative Autonomous OpMode for the left position on the
  * red alliance.
  */
-@Autonomous(name = "RedLeftAuto", group = "Auto")
+@Autonomous(name = "BlueLeftAuto", group = "Auto")
 //@Disabled                            // Comment this out to add to the opmode list
-public class RedLeftAuto extends OpMode {
+public class BlueLeftAuto extends OpMode {
 
     /**
      * Note that the REV Robotics Color-Distance incorporates two sensors into one device.
@@ -134,7 +132,7 @@ public class RedLeftAuto extends OpMode {
 
         if (stage == 0) {
         	lift.closeClaw(); // Grab the block before moving
-        	stage = runtime.seconds() >= 1.2 ? 1 : 0; // Wait 0.5 seconds
+        	stage = runtime.seconds() >= 1.3 ? 1 : 0; // Wait 0.5 seconds
 		} else if (stage == 1) {
 			lift.setSetpoint(1000); // Raise the lift with the now grabbed block
         	stage = runtime.seconds() >= 1.3 ? 2 : 1; // Wait for the lift to go up
@@ -142,12 +140,12 @@ public class RedLeftAuto extends OpMode {
         	jewelArm.armDown(); // Lower color sensor
         	stage = runtime.seconds() >= 0.7 ? 3 : 2; // Wait 0.5 seconds
 		} else if (stage == 3) {
-			stage = hsvValues[0] > 120 && hsvValues[0] < 250 ? 4 : 5; // Measure hue and determine stage
+			stage = hsvValues[0] > 130 && hsvValues[0] < 250 ? 4 : 5; // Measure hue and determine stage
 		} else if (stage == 4) { // Blue detected
-            movement.ForwardKnock();
+            movement.BackwardKnock();
             stage = runtime.seconds() >= 0.12 ? 6 : 4;
 		} else if (stage == 5) { // Red detected (Not blue)
-            movement.BackwardKnock();
+            movement.ForwardKnock();
             stage = runtime.seconds() >= 0.12 ? 7 : 5;
 		} else if (stage == 6) { // Blue detected
             movement.StoptheMotor();
@@ -158,11 +156,11 @@ public class RedLeftAuto extends OpMode {
             jewelArm.armUp();
             stage = runtime.seconds() >= 0.7 ? 9 : 7;
         } else if (stage == 8) { //Blue detected
-            movement.GetIntoBoxF();
-            stage = runtime.seconds() >= 0.55 ? 10 : 8;
+            movement.GetIntoBoxB();
+            stage = runtime.seconds() >= 0.7 ? 10 : 8;
         } else if (stage == 9) { //Red detected
-            movement.RampUp();
-            stage = runtime.seconds() >= 1 ? 11 : 9;
+            movement.RampBack();
+            stage = runtime.seconds() >= 1.3 ? 11 : 9;
         } else if (stage == 10) { //Blue detected
             movement.StoptheMotor();
             stage = runtime.seconds() >= 0.5 ? 12 : 10;
@@ -170,8 +168,8 @@ public class RedLeftAuto extends OpMode {
             movement.StoptheMotor();
             stage = runtime.seconds() >= 0.5 ? 12 : 11;
         } else if (stage == 12) { //Turn maybe?
-            movement.TurnLeft();
-            stage = runtime.seconds() >= 0.45 ? 13 : 12;
+            movement.TurnRightF(); //This may not work, fix the seconds
+            stage = runtime.seconds() >= 1 ? 13 : 12;
         } else if (stage == 13) {
             movement.StoptheMotor();
             stage = runtime.seconds() >= 0.3 ? 14 : 13;

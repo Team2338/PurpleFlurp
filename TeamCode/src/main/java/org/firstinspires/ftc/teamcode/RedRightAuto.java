@@ -40,15 +40,13 @@ import org.firstinspires.ftc.subsystems.Drivetrain;
 import org.firstinspires.ftc.subsystems.JewelArm;
 import org.firstinspires.ftc.subsystems.Lift;
 
-import static java.lang.Thread.sleep;
-
 /*
  * This is an Iterative Autonomous OpMode for the left position on the
  * red alliance.
  */
-@Autonomous(name = "RedLeftAuto", group = "Auto")
+@Autonomous(name = "RedRightAuto", group = "Auto")
 //@Disabled                            // Comment this out to add to the opmode list
-public class RedLeftAuto extends OpMode {
+public class RedRightAuto extends OpMode {
 
     /**
      * Note that the REV Robotics Color-Distance incorporates two sensors into one device.
@@ -162,7 +160,7 @@ public class RedLeftAuto extends OpMode {
             stage = runtime.seconds() >= 0.55 ? 10 : 8;
         } else if (stage == 9) { //Red detected
             movement.RampUp();
-            stage = runtime.seconds() >= 1 ? 11 : 9;
+            stage = runtime.seconds() >= 0.9 ? 11 : 9;
         } else if (stage == 10) { //Blue detected
             movement.StoptheMotor();
             stage = runtime.seconds() >= 0.5 ? 12 : 10;
@@ -170,8 +168,8 @@ public class RedLeftAuto extends OpMode {
             movement.StoptheMotor();
             stage = runtime.seconds() >= 0.5 ? 12 : 11;
         } else if (stage == 12) { //Turn maybe?
-            movement.TurnLeft();
-            stage = runtime.seconds() >= 0.45 ? 13 : 12;
+            movement.TurnRight(); //FIX THE STRAFE AHHHHHHHHHH. This probably won't work...
+            stage = runtime.seconds() >= 1 ? 13 : 12;
         } else if (stage == 13) {
             movement.StoptheMotor();
             stage = runtime.seconds() >= 0.3 ? 14 : 13;

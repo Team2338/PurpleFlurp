@@ -35,6 +35,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.lib.RobotMap;
 import org.firstinspires.ftc.subsystems.Drivetrain;
+import org.firstinspires.ftc.subsystems.JewelArm;
 import org.firstinspires.ftc.subsystems.Lift;
 
 /**
@@ -59,6 +60,7 @@ public class DefaultTeleOp extends OpMode {
 
     private Drivetrain drivetrain;
     private Lift lift;
+    private JewelArm jewelArm;
 
     private boolean padPressed = false;
 
@@ -70,6 +72,7 @@ public class DefaultTeleOp extends OpMode {
         RobotMap.init(hardwareMap);
         drivetrain = Drivetrain.getInstance();
         lift = Lift.getInstance();
+        jewelArm = JewelArm.getInstance();
 
         // Telemetry
         telemetry.addData("Status", "Initialized");
@@ -116,6 +119,10 @@ public class DefaultTeleOp extends OpMode {
             lift.openClaw();
         } else if (gamepad2.right_bumper) {
             lift.closeClaw();
+        }
+
+        if (gamepad2.b) {
+            jewelArm.armUp();
         }
 
         // Telemetry
