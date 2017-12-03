@@ -63,7 +63,7 @@ public class Drivetrain {
     }
 
     public void updateDrive() {
-        double y = drivePID.getOutput(frontLeft.getPortNumber());
+        double y = drivePID.getOutput(getPosition());
     	mecanumDrive(0, y, 0);
 	}
 
@@ -73,7 +73,6 @@ public class Drivetrain {
 	}
 
 	public void setSetpoint(double setpoint) {
-    	resetEncoders();
     	drivePID.setSetpoint(setpoint);
     }
 

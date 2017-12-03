@@ -26,7 +26,7 @@ public class Lift {
     private Servo left = RobotMap.leftServo;
     private Servo right = RobotMap.rightServo;
 
-	private final double kP = 0.003;
+	private final double kP = 0.002;
 	private final double kI = 0;
 	private final double kD = 0;
 
@@ -41,6 +41,8 @@ public class Lift {
         lift.setDirection(DcMotor.Direction.FORWARD);
 
         lift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        pid.setMaxIOutput(0.4);
     }
 
     public void update() {

@@ -129,7 +129,11 @@ public class RedLeftAuto extends OpMode {
         telemetry.update();
 
 
-        if (stage != lastStage) runtime.reset();
+        if (stage != lastStage) {
+            runtime.reset();
+            movement.resetEncoders();
+        }
+
         lastStage = stage;
 
         if (stage == 0) {
