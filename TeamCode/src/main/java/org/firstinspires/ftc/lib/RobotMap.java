@@ -7,6 +7,8 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
+
 /**
  *
  */
@@ -53,6 +55,7 @@ public class RobotMap {
 
         // Arm Sensors
         colorSensor = map.get(ColorSensor.class, "colorSensor");
+
     }
 
 }

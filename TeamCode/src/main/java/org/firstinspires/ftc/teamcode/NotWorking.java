@@ -28,24 +28,25 @@
  */
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import android.graphics.Color;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.util.ElapsedTime;
+
+import org.firstinspires.ftc.lib.RobotMap;
 import org.firstinspires.ftc.robotcontroller.external.samples.ConceptVuforiaNavigation;
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
-import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
-import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
 import org.firstinspires.ftc.robotcore.external.navigation.VuMarkInstanceId;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
+import org.firstinspires.ftc.subsystems.Drivetrain;
+import org.firstinspires.ftc.subsystems.JewelArm;
+import org.firstinspires.ftc.subsystems.Lift;
 
 /**
  * This OpMode illustrates the basics of using the Vuforia engine to determine
@@ -66,13 +67,27 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
  * is explained in {@link ConceptVuforiaNavigation}.
  */
 
-@Autonomous(name="Vuforia", group ="Concept")
+@Autonomous(name="NotWorking", group ="Concept")
 //@Disabled
-public class VuforiaTest extends LinearOpMode {
+public class NotWorking extends LinearOpMode {
 
     public static final String TAG = "Vuforia VuMark Sample";
 
     OpenGLMatrix lastLocation = null;
+
+    private JewelArm jewelArm;
+    private Lift lift;
+    private Drivetrain movement;
+    private ElapsedTime runtime = new ElapsedTime();
+
+    private int stage = 16;
+    private int lastStage = -1;
+
+    float hsvValues[] = {0F, 0F, 0F};
+
+    // sometimes it helps to multiply the raw RGB values with a scale factor
+    // to amplify/attentuate the measured values.
+    final double SCALE_FACTOR = 255;
 
     /**
      * {@link #vuforia} is the variable we will use to store our instance of the Vuforia
@@ -80,7 +95,13 @@ public class VuforiaTest extends LinearOpMode {
      */
     VuforiaLocalizer vuforia;
 
-    @Override public void runOpMode() {
+    @Override
+    public void runOpMode() {
+
+        RobotMap.init(hardwareMap);
+        jewelArm = JewelArm.getInstance();
+        lift = Lift.getInstance();
+        movement = Drivetrain.getInstance();
 
         /*
          * To start up Vuforia, tell it the view that we wish to use for camera monitor (on the RC phone);
@@ -121,6 +142,20 @@ public class VuforiaTest extends LinearOpMode {
          * but differ in their instance id information.
          * @see VuMarkInstanceId
          */
+
+        Color.RGBToHSV((int) (jewelArm.colorSensor.red() * SCALE_FACTOR),
+                (int) (jewelArm.colorSensor.green() * SCALE_FACTOR),
+                (int) (jewelArm.colorSensor.blue() * SCALE_FACTOR),
+                hsvValues);
+
+        // send the info back to driver station using telemetry function.
+        //telemetry.addData("Distance (cm)",
+        //String.format(Locale.US, "%.02f", sensorDistance.getDistance(DistanceUnit.CM)));
+        telemetry.addData("Hue", hsvValues[0]);
+        telemetry.addData("Stage", stage);
+        telemetry.addData("Position", movement.getPosition3());
+        telemetry.update();
+
         VuforiaTrackables relicTrackables = this.vuforia.loadTrackablesFromAsset("RelicVuMark");
         VuforiaTrackable relicTemplate = relicTrackables.get(0);
         relicTemplate.setName("relicVuMarkTemplate"); // can help in debugging; otherwise not necessary
@@ -140,6 +175,13 @@ public class VuforiaTest extends LinearOpMode {
              * UNKNOWN will be returned by {@link RelicRecoveryVuMark#from(VuforiaTrackable)}.
              */
             RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
+            if (stage != lastStage) {
+                runtime.reset();
+                movement.resetEncoders();
+            }
+
+            lastStage = stage;
+
             if (vuMark != RelicRecoveryVuMark.UNKNOWN) {
 
                 /* Found an instance of the template. In the actual game, you will probably
@@ -147,7 +189,61 @@ public class VuforiaTest extends LinearOpMode {
                  * on which VuMark was visible. */
                 telemetry.addData("VuMark", "%s visible", vuMark);
 
-                /* For fun, we also exhibit the navigational pose. In the Relic Recovery game,
+                if (vuMark == RelicRecoveryVuMark.RIGHT) {
+                    if (stage == 16) {
+                        lift.closeClaw(); // Grab the block before moving
+                        stage = runtime.seconds() >= 1.2 ? 17 : 16; // Wait 0.5 seconds
+                    } else if (stage == 17) {
+                        lift.setSetpoint(1000); // Raise the lift with the now grabbed block
+                        stage = runtime.seconds() >= 1.3 ? 18 : 17; // Wait for the lift to go up
+                    } else if (stage == 18) {
+                        stage = runtime.seconds() >= 0.1 ? 19 : 18;
+                    } else if (stage == 19) {
+                        jewelArm.armDown(); // Lower color sensor
+                        stage = runtime.seconds() >= 0.7 ? 20 : 19; // Wait 0.5 seconds
+                    } else if (stage == 20) {
+                        stage = hsvValues[0] > 120 && hsvValues[0] < 250 ? 21 : 22; // Measure hue and determine stage
+                    } else if (stage == 21) { // Blue detected
+                        movement.ForwardKnock();
+                        stage = runtime.seconds() >= 0.22 ? 23 : 21;
+                    } else if (stage == 22) { // Red detected (Not blue)
+                        movement.BackwardKnock();
+                        stage = runtime.seconds() >= 0.22 ? 24 : 22;
+                    } else if (stage == 23) { // Blue detected
+                        movement.StoptheMotor();
+                        jewelArm.armUp();
+                        stage = runtime.seconds() >= 0.7 ? 25 : 23;
+                    } else if (stage == 24) { // Red detected
+                        movement.StoptheMotor();
+                        jewelArm.armUp();
+                        stage = runtime.seconds() >= 0.7 ? 26 : 24;
+                    } else if (stage == 25) { //Blue detected
+                        movement.GetIntoBoxF();
+                        stage = runtime.seconds() >= 0.55 ? 27 : 25;
+                    } else if (stage == 26) { //Red detected
+                        movement.RampUp();
+                        stage = runtime.seconds() >= 1 ? 28 : 26;
+                    } else if (stage == 27) { //Blue detected
+                        movement.StoptheMotor();
+                        stage = runtime.seconds() >= 0.5 ? 29 : 27;
+                    } else if (stage == 28) { //Red detected
+                        movement.StoptheMotor();
+                        stage = runtime.seconds() >= 0.5 ? 29 : 28;
+                    } else if (stage == 29) { //Turn maybe?
+                        movement.TurnRight();
+                        stage = runtime.seconds() >= 1 ? 30 : 29;
+                    } else if (stage == 30) {
+                        movement.StoptheMotor();
+                        stage = runtime.seconds() >= 0.3 ? 31 : 30;
+                    } else if (stage == 31) {
+                        movement.BackwardKnock();
+                        stage = runtime.seconds() >= 0.7 ? 32 : 31;
+                    } else if (stage == 32) {
+                        movement.StoptheMotor();
+                        stage = runtime.seconds() >= 0.2 ? 200 : 32;
+                    }
+
+                    /* For fun, we also exhibit the navigational pose. In the Relic Recovery game,
                  * it is perhaps unlikely that you will actually need to act on this pose information, but
                  * we illustrate it nevertheless, for completeness. */
 //                OpenGLMatrix pose = ((VuforiaTrackableDefaultListener)relicTemplate.getListener()).getPose();
@@ -169,15 +265,21 @@ public class VuforiaTest extends LinearOpMode {
 //                    double rY = rot.secondAngle;
 //                    double rZ = rot.thirdAngle;
 
-            } else {
-                telemetry.addData("VuMark", "not visible");
-            }
+                } else if (vuMark == RelicRecoveryVuMark.CENTER) {
+                    telemetry.addData("VuMark", "Center lol");
+                } else if (vuMark == RelicRecoveryVuMark.LEFT) {
+                    telemetry.addData("VuMark", "Left lol");
+                } else {
+                    telemetry.addData("VuMark", "not visible");
 
-            telemetry.update();
+                }
+            }
+                telemetry.update();
+                lift.update();
         }
     }
 
-    String format(OpenGLMatrix transformationMatrix) {
-        return (transformationMatrix != null) ? transformationMatrix.formatAsTransform() : "null";
-    }
+        String format (OpenGLMatrix transformationMatrix){
+            return (transformationMatrix != null) ? transformationMatrix.formatAsTransform() : "null";
+        }
 }
