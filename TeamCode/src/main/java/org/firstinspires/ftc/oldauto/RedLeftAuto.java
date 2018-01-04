@@ -27,11 +27,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.oldauto;
 
 import android.graphics.Color;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -54,7 +55,7 @@ import static java.lang.Thread.sleep;
  * red alliance.
  */
 @Autonomous(name = "RedLeftAuto", group = "Auto")
-//@Disabled                            // Comment this out to add to the opmode list
+@Disabled                            // Comment this out to add to the opmode list
 public class RedLeftAuto extends OpMode {
 
     /**
@@ -81,10 +82,6 @@ public class RedLeftAuto extends OpMode {
     private ElapsedTime runtime = new ElapsedTime();
     private int stage = 0;
     private int lastStage = -1;
-    public static final String TAG = "Vuforia";
-
-    OpenGLMatrix lastLocation = null;
-    VuforiaLocalizer vuforia;
 
     // hsvValues is an array that will hold the hue, saturation, and value information.
     float hsvValues[] = {0F, 0F, 0F};
@@ -118,14 +115,6 @@ public class RedLeftAuto extends OpMode {
     @Override
     public void start() {
         resetStartTime();
-
-        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
-
-        parameters.vuforiaLicenseKey = "AQzQCQj/////AAAAGZlcBiWnoE92snvweeDM1eY0IvsYZGPC/fahY6+LNXlrpjIDnd3l4vBZaLlI0xTgwVofau+yL+N0C/x1vYc8gRBPs6NpLp4e+l9DtF/sjw1sUP3eSQLIe6nxe1uILWzf9P9S+SI8TL+eZlntAZ/Jvqgo3JYiEOU1pXO9UHBcSxd9hUJFAI897emtj4Tn4rif0iPr53Pg3zm2kUVp44YsTqJ/DDMrhpBd6hXj/xwLIEj9zgetTFLFrBinVykQtKWLQuo+MVH4Whh7kXmu2UloHHtV3tp0pECZMqNeVbECuAg+gtZwcFjDbfA2pnEz3b+gVBe57ylm3QdQbllEpzilS7h0WXSj42u476b54eDa2Cbt";
-
-        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
-        this.vuforia = ClassFactory.createVuforiaLocalizer(parameters);
     }
 
     /*
@@ -155,39 +144,10 @@ public class RedLeftAuto extends OpMode {
         }
 
         lastStage = stage;
-
-        /**
-         * Load the data set containing the VuMarks for Relic Recovery. There's only one trackable
-         * in this data set: all three of the VuMarks in the game were created from this one template,
-         * but differ in their instance id information.
-         * @see VuMarkInstanceId
-         */
-        VuforiaTrackables relicTrackables = this.vuforia.loadTrackablesFromAsset("RelicVuMark");
-        VuforiaTrackable relicTemplate = relicTrackables.get(0);
-        relicTemplate.setName("relicVuMarkTemplate"); // can help in debugging; otherwise not necessary
-
-        telemetry.addData(">", "Press Play to start");
-        telemetry.update();
-
-        relicTrackables.activate();
-        RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
-
         if (stage == 0) {
-            if (vuMark != RelicRecoveryVuMark.UNKNOWN) {
-                telemetry.addData("VuMark", "%s visible", vuMark);
-
-                if (vuMark == RelicRecoveryVuMark.RIGHT) {
-                    stage = 16;
-                } else if (vuMark == RelicRecoveryVuMark.LEFT) {
-                    stage = 33;
-                } else if (vuMark == RelicRecoveryVuMark.CENTER) {
-                    stage = 1;
-                }
-            } else {
-                stage = 1;
-            }
-        }
-        if (stage == 1) {
+            lift.setSetpoint(10);
+            stage = runtime.seconds() >= 0.6 ? 1 : 0;
+        } else if (stage == 1) {
         	lift.closeClaw(); // Grab the block before moving
         	stage = runtime.seconds() >= 1.2 ? 2 : 1; // Wait 0.5 seconds
 		} else if (stage == 2) {
@@ -230,123 +190,7 @@ public class RedLeftAuto extends OpMode {
         } else if (stage == 14) {
             movement.StoptheMotor();
             stage = runtime.seconds() >= 0.3 ? 200 : 14;
-
-            //THIS IS For RIGHT DETECTED
-        } else  if (stage == 16) {
-            lift.closeClaw(); // Grab the block before moving
-            stage = runtime.seconds() >= 1.2 ? 17 : 16; // Wait 0.5 seconds
-        } else if (stage == 17) {
-            lift.setSetpoint(1000); // Raise the lift with the now grabbed block
-            stage = runtime.seconds() >= 1.3 ? 18 : 17; // Wait for the lift to go up
-        } else if (stage == 18) {
-            stage = runtime.seconds() >= 0.1 ? 19 : 18;
-        } else if (stage == 19) {
-            jewelArm.armDown(); // Lower color sensor
-            stage = runtime.seconds() >= 0.7 ? 20 : 19; // Wait 0.5 seconds
-        } else if (stage == 20) {
-            stage = hsvValues[0] > 120 && hsvValues[0] < 250 ? 21 : 22; // Measure hue and determine stage
-        } else if (stage == 21) { // Blue detected
-            movement.ForwardKnock();
-            stage = runtime.seconds() >= 0.22 ? 23 : 21;
-        } else if (stage == 22) { // Red detected (Not blue)
-            movement.BackwardKnock();
-            stage = runtime.seconds() >= 0.22 ? 24 : 22;
-        } else if (stage == 23) { // Blue detected
-            movement.StoptheMotor();
-            jewelArm.armUp();
-            stage = runtime.seconds() >= 0.7 ? 25 : 23;
-        } else if (stage == 24) { // Red detected
-            movement.StoptheMotor();
-            jewelArm.armUp();
-            stage = runtime.seconds() >= 0.7 ? 26 : 24;
-        } else if (stage == 25) { //Blue detected
-            movement.GetIntoBoxF();
-            stage = runtime.seconds() >= 0.55 ? 27 : 25;
-        } else if (stage == 26) { //Red detected
-            movement.RampUp();
-            stage = runtime.seconds() >= 1 ? 28 : 26;
-        } else if (stage == 27) { //Blue detected
-            movement.StoptheMotor();
-            stage = runtime.seconds() >= 0.5 ? 29 : 27;
-        } else if (stage == 28) { //Red detected
-            movement.StoptheMotor();
-            stage = runtime.seconds() >= 0.5 ? 29 : 28;
-        } else if (stage == 29) { //Turn maybe?
-            movement.TurnRight();
-            stage = runtime.seconds() >= 1 ? 30 : 29;
-        } else if (stage == 30) {
-            movement.StoptheMotor();
-            stage = runtime.seconds() >= 0.3 ? 31 : 30;
-        } else if (stage == 31) {
-            movement.BackwardKnock();
-            stage = runtime.seconds() >= 0.7 ? 32 : 31;
-        } else if (stage == 32) {
-            movement.StoptheMotor();
-            stage = runtime.seconds() >= 0.2 ? 200 : 32;
-
-
-            //This is for LEFT Detected
-        }else if (stage == 33) {
-            lift.closeClaw(); // Grab the block before moving
-            stage = runtime.seconds() >= 1.2 ? 34 : 33; // Wait 0.5 seconds
-        } else if (stage == 34) {
-            lift.setSetpoint(1000); // Raise the lift with the now grabbed block
-            stage = runtime.seconds() >= 1.3 ? 35 : 34; // Wait for the lift to go up
-        } else if (stage == 35) {
-            stage = runtime.seconds() >= 0.1 ? 36 : 35;
-        } else if (stage == 36) {
-            jewelArm.armDown(); // Lower color sensor
-            stage = runtime.seconds() >= 0.7 ? 37 : 36; // Wait 0.5 seconds
-        } else if (stage == 37) {
-            stage = hsvValues[0] > 120 && hsvValues[0] < 250 ? 38 : 39; // Measure hue and determine stage
-        } else if (stage == 38) { // Blue detected
-            movement.ForwardKnock();
-            stage = runtime.seconds() >= 0.22 ? 40 : 38;
-        } else if (stage == 39) { // Red detected (Not blue)
-            movement.BackwardKnock();
-            stage = runtime.seconds() >= 0.22 ? 41 : 39;
-        } else if (stage == 40) { // Blue detected
-            movement.StoptheMotor();
-            jewelArm.armUp();
-            stage = runtime.seconds() >= 0.7 ? 42 : 40;
-        } else if (stage == 41) { // Red detected
-            movement.StoptheMotor();
-            jewelArm.armUp();
-            stage = runtime.seconds() >= 0.7 ? 43 : 41;
-        } else if (stage == 42) { //Blue detected
-            movement.GetIntoBoxF();
-            stage = runtime.seconds() >= 0.55 ? 44 : 42;
-        } else if (stage == 43) { //Red detected
-            movement.RampUp();
-            stage = runtime.seconds() >= 1 ? 45 : 43;
-        } else if (stage == 44) { //Blue detected
-            movement.StoptheMotor();
-            stage = runtime.seconds() >= 0.5 ? 46 : 44;
-        } else if (stage == 45) { //Red detected
-            movement.StoptheMotor();
-            stage = runtime.seconds() >= 0.5 ? 46 : 45;
-        } else if (stage == 46) { //Turn maybe?
-            movement.TurnRight();
-            stage = runtime.seconds() >= 1.5 ? 47 : 46;
-        } else if (stage == 47) {
-            movement.StoptheMotor();
-            stage = runtime.seconds() >= 0.3 ? 48 : 47;
-        } else if (stage == 48) {
-            movement.BackwardKnock();
-            stage = runtime.seconds() >= 0.7 ? 49 : 48;
-        } else if (stage == 49) {
-            movement.StoptheMotor();
-            stage = runtime.seconds() >= 0.2 ? 200 : 49;
-        }
-
-
-
-
-
-
-
-
-        else if (stage == 200) {
+        } else if (stage == 200) {
             lift.setSetpoint(10);
         }
 

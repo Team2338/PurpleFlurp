@@ -51,6 +51,11 @@ public class Drivetrain {
         rearLeft.setDirection(DcMotor.Direction.FORWARD);
         rearRight.setDirection(DcMotor.Direction.FORWARD);
 
+        frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rearLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rearRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
         frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rearLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -136,6 +141,20 @@ public class Drivetrain {
         frontLeft.setPower(0.4);
         rearRight.setPower(-0.4);
         rearLeft.setPower(0.4);
+    }
+
+    public void VerytinyF () {
+        frontRight.setPower(-0.1);
+        frontLeft.setPower(0.1);
+        rearRight.setPower(-0.1);
+        rearLeft.setPower(0.1);
+    }
+
+    public void VerytinyB () {
+        frontRight.setPower(0.1);
+        frontLeft.setPower(-0.1);
+        rearRight.setPower(0.1);
+        rearLeft.setPower(-0.1);
     }
 
     public void GetIntoBoxF () {     //Forward at a higher power than before

@@ -70,7 +70,7 @@ public class StrafeTest extends OpMode {
     private Drivetrain movement;
 
     private ElapsedTime runtime = new ElapsedTime();
-    private int stage = 0;
+    private int stage = 12;
     private int lastStage = -1;
 
     // hsvValues is an array that will hold the hue, saturation, and value information.
@@ -130,51 +130,15 @@ public class StrafeTest extends OpMode {
         if (stage != lastStage) runtime.reset();
         lastStage = stage;
 
-        if (stage == 0) {
-        	lift.closeClaw(); // Grab the block before moving
-        	stage = runtime.seconds() >= 1.2 ? 1 : 0; // Wait 0.5 seconds
-		} else if (stage == 1) {
-			lift.setSetpoint(1000); // Raise the lift with the now grabbed block
-        	stage = runtime.seconds() >= 1.3 ? 2 : 1; // Wait for the lift to go up
-		} else if (stage == 2) {
-        	jewelArm.armDown(); // Lower color sensor
-        	stage = runtime.seconds() >= 0.7 ? 3 : 2; // Wait 0.5 seconds
-		} else if (stage == 3) {
-			stage = hsvValues[0] > 120 && hsvValues[0] < 250 ? 4 : 5; // Measure hue and determine stage
-		} else if (stage == 4) { // Blue detected
-            movement.ForwardKnock();
-            stage = runtime.seconds() >= 0.22 ? 6 : 4;
-		} else if (stage == 5) { // Red detected (Not blue)
-            movement.BackwardKnock();
-            stage = runtime.seconds() >= 0.22 ? 7 : 5;
-		} else if (stage == 6) { // Blue detected
-            movement.StoptheMotor();
-            jewelArm.armUp();
-            stage = runtime.seconds() >= 0.7 ? 8 : 6;
-        } else if (stage == 7) { // Red detected
-            movement.StoptheMotor();
-            jewelArm.armUp();
-            stage = runtime.seconds() >= 0.7 ? 9 : 7;
-        } else if (stage == 8) { //Blue detected
-            movement.GetIntoBoxF();
-            stage = runtime.seconds() >= 0.3 ? 10 : 8;
-        } else if (stage == 9) { //Red detected
-            movement.RampUp();
-            stage = runtime.seconds() >= 0.5 ? 11 : 9;
-        } else if (stage == 10) { //Blue detected
-            movement.StoptheMotor();
-            stage = runtime.seconds() >= 0.5 ? 12 : 10;
-        } else if (stage == 11) { //Red detected
-            movement.StoptheMotor();
-            stage = runtime.seconds() >= 0.5 ? 12 : 11;
-        } else if (stage == 12) { //Turn maybe?
-            movement.mecanumDrive(-0.8, 0, 0); //FIX THE STRAFE AHHHHHHHHHH. This probably won't work...
+
+        if (stage == 12) {
+            movement.mecanumDrive(-0.8, 0, 0.2); //FIX THE STRAFE AHHHHHHHHHH. This probably won't work...
             stage = runtime.seconds() >= 4 ? 13 : 12;
         } else if (stage == 13) {
             movement.StoptheMotor();
             stage = runtime.seconds() >= 0.3 ? 14 : 13;
         } else if (stage == 14) {
-            movement.mecanumDrive(0.8, 0, 0); //This is also strafe
+            movement.mecanumDrive(0.8, 0, -0.2); //This is also strafe
             stage = runtime.seconds() >= 4 ? 15 : 14;
         } else if (stage == 15) {
             movement.StoptheMotor();

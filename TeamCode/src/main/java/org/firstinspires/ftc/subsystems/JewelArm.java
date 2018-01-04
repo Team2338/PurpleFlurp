@@ -34,4 +34,6 @@ public class JewelArm {
     public void armUp() {
         arm.setPosition(0.6);
     }
+
+    public void armMidDown() {arm.setPosition(0.1);}
 }

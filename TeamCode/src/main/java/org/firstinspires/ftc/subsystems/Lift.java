@@ -80,7 +80,7 @@ public class Lift {
         } else if (position == 1) {
             setSetpoint(1300);
         } else if (position == 2) {
-            setSetpoint(2200);
+            setSetpoint(2600);
         }
     }
 

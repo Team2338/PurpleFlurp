@@ -27,11 +27,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.oldauto;
 
 import android.graphics.Color;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -44,9 +45,9 @@ import org.firstinspires.ftc.subsystems.Lift;
  * This is an Iterative Autonomous OpMode for the left position on the
  * red alliance.
  */
-@Autonomous(name = "RedRightAuto", group = "Auto")
-//@Disabled                            // Comment this out to add to the opmode list
-public class RedRightAuto extends OpMode {
+@Autonomous(name = "BlueRightAuto", group = "Auto")
+@Disabled                            // Comment this out to add to the opmode list
+public class BlueRightAuto extends OpMode {
 
     /**
      * Note that the REV Robotics Color-Distance incorporates two sensors into one device.
@@ -126,7 +127,6 @@ public class RedRightAuto extends OpMode {
         telemetry.addData("Position", movement.getPosition3());
         telemetry.update();
 
-
         if (stage != lastStage) runtime.reset();
         lastStage = stage;
 
@@ -142,10 +142,10 @@ public class RedRightAuto extends OpMode {
 		} else if (stage == 3) {
 			stage = hsvValues[0] > 120 && hsvValues[0] < 250 ? 4 : 5; // Measure hue and determine stage
 		} else if (stage == 4) { // Blue detected
-            movement.ForwardKnock();
+            movement.BackwardKnock();
             stage = runtime.seconds() >= 0.22 ? 6 : 4;
 		} else if (stage == 5) { // Red detected (Not blue)
-            movement.BackwardKnock();
+            movement.ForwardKnock();
             stage = runtime.seconds() >= 0.22 ? 7 : 5;
 		} else if (stage == 6) { // Blue detected
             movement.StoptheMotor();
@@ -156,11 +156,11 @@ public class RedRightAuto extends OpMode {
             jewelArm.armUp();
             stage = runtime.seconds() >= 0.7 ? 9 : 7;
         } else if (stage == 8) { //Blue detected
-            movement.GetIntoBoxF();
-            stage = runtime.seconds() >= 0.5 ? 10 : 8;
+            movement.GetIntoBoxB();
+            stage = runtime.seconds() >= 0.55 ? 10 : 8;
         } else if (stage == 9) { //Red detected
-            movement.RampUp();
-            stage = runtime.seconds() >= 0.65 ? 11 : 9;
+            movement.RampBack();
+            stage = runtime.seconds() >= 0.87 ? 11 : 9;
         } else if (stage == 10) { //Blue detected
             movement.StoptheMotor();
             stage = runtime.seconds() >= 0.5 ? 12 : 10;
@@ -168,12 +168,16 @@ public class RedRightAuto extends OpMode {
             movement.StoptheMotor();
             stage = runtime.seconds() >= 0.5 ? 12 : 11;
         } else if (stage == 12) { //Turn maybe?
-            movement.TurnRightF(); //FIX THE STRAFE AHHHHHHHHHH. This probably won't work...
-            stage = runtime.seconds() >= 1.3 ? 13 : 12;
+            movement.TurnLeftB();
+            stage = runtime.seconds() >= 0.6 ? 13 : 12;
         } else if (stage == 13) {
             movement.StoptheMotor();
-            stage = runtime.seconds() >= 0.3 ? 14 : 13;
+            stage = runtime.seconds() >= 0.2 ? 14 : 13;
         } else if (stage == 14) {
+            movement.TurnLeft();
+            stage = runtime.seconds() >= 0.2 ? 15 : 14;
+        } else if (stage == 15) {
+            movement.StoptheMotor();
             lift.setSetpoint(10);
         }
 

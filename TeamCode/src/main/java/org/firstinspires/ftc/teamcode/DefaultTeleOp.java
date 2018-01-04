@@ -37,6 +37,7 @@ import org.firstinspires.ftc.lib.RobotMap;
 import org.firstinspires.ftc.subsystems.Drivetrain;
 import org.firstinspires.ftc.subsystems.JewelArm;
 import org.firstinspires.ftc.subsystems.Lift;
+import org.firstinspires.ftc.subsystems.Relic;
 
 /**
  * This file contains an example of an iterative (Non-Linear) "OpMode".
@@ -61,6 +62,7 @@ public class DefaultTeleOp extends OpMode {
     private Drivetrain drivetrain;
     private Lift lift;
     private JewelArm jewelArm;
+    //private Relic relic;
 
     private boolean padPressed = false;
 
@@ -73,6 +75,8 @@ public class DefaultTeleOp extends OpMode {
         drivetrain = Drivetrain.getInstance();
         lift = Lift.getInstance();
         jewelArm = JewelArm.getInstance();
+        //relic = Relic.getInstance();
+
 
         // Telemetry
         telemetry.addData("Status", "Initialized");
@@ -100,6 +104,9 @@ public class DefaultTeleOp extends OpMode {
     public void loop() {
         // Movement
         drivetrain.mecanumDrive(gamepad1.left_stick_x, -gamepad1.left_stick_y, gamepad1.right_stick_x);
+
+        //Relic
+        //relic.relicDrive(gamepad2.right_stick_y);
 
         // Lift Mechanism
         if (gamepad2.dpad_up) {

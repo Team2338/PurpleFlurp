@@ -4,6 +4,7 @@ import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -31,9 +32,13 @@ public class RobotMap {
 
     // Arm Hardware
     public static Servo arm;
+    public static ColorSensor colorSensor;
 
-    // Arm Sensors
-    public static ColorSensor colorSensor; //farts
+    //Relic Hardware
+    //public static Servo relicLeft;
+    //public static Servo relicRight;
+    public static DcMotor relicMotor;
+
 
     public static void init(HardwareMap map) {
         // Drivetrain HARDware
@@ -53,9 +58,13 @@ public class RobotMap {
         // Arm HARDware
         arm = map.get(Servo.class, "arm");
 
-        // Arm Sensors
+        //PUT THE COLOR SENSOR HERE IF WE USE ANY OF THE OLD CODE!
         colorSensor = map.get(ColorSensor.class, "colorSensor");
 
+        //Relic HARDware (ACTIVATE THIS LATER)
+        //relicLeft = map.get(Servo.class, "relicLeft");
+       // relicRight = map.get(Servo.class, "relicRight");
+       relicMotor = map.get(DcMotor.class, "relicMotor");
     }
 
 }
