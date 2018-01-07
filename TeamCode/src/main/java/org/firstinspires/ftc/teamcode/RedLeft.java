@@ -190,13 +190,13 @@ public class RedLeft extends LinearOpMode {
             RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
             if (stage != lastStage) {
                 runtime.reset();
-                movement.resetEncoders();
+                //movement.resetEncoders();
             }
 
             lastStage = stage;
 
             if (stage == 0) {
-                stage = runtime.seconds() > 2 ? 1 : 0;
+                stage = runtime.seconds() > 1 ? 1 : 0;
             } else if (stage == 1) {
 
                 /* Found an instance of the template. In the actual game, you will probably
@@ -205,26 +205,26 @@ public class RedLeft extends LinearOpMode {
                 telemetry.addData("VuMark", "%s visible", vuMark);
 
                 if (vuMark == RelicRecoveryVuMark.RIGHT) {
-                    stage = 15;
-                } else if (vuMark == RelicRecoveryVuMark.LEFT) {
-                    stage = 90;
-                } else if (vuMark == RelicRecoveryVuMark.CENTER) {
                     stage = 50;
+                } else if (vuMark == RelicRecoveryVuMark.LEFT) {
+                    stage = 15;
+                } else if (vuMark == RelicRecoveryVuMark.CENTER) {
+                    stage = 90;
                 } else if (vuMark == RelicRecoveryVuMark.UNKNOWN) {
                     stage = 5;
                     //Backup stage # is here
                 }
             }
 
-            //CODE FOR RIGHT BLOCK
+            //CODE FOR LEFT BLOCK - THIS ONE WORKS
             if (stage == 15) {
-                lift.setSetpoint(10);
+                lift.setSetpoint(-10);
                 stage = runtime.seconds() >= 1 ? 16 : 15;
             } else if (stage == 16) {
                 lift.closeClaw(); // Grab the block before moving
                 stage = runtime.seconds() >= 1.2 ? 17 : 16; // Wait 0.5 seconds
             } else if (stage == 17) {
-                lift.setSetpoint(1000); // Raise the lift with the now grabbed block
+                lift.setSetpoint(-1000); // Raise the lift with the now grabbed block
                 stage = runtime.seconds() >= 1.3 ? 18 : 17; // Wait for the lift to go up
             } else if (stage == 18) {
                 stage = runtime.seconds() >= 0.1 ? 19 : 18;
@@ -247,36 +247,36 @@ public class RedLeft extends LinearOpMode {
                 movement.StoptheMotor();
                 jewelArm.armUp();
                 stage = runtime.seconds() >= 1 ? 26 : 24;
-                //WORK ON THESE VALUES (RIGHT)
+                //WORK ON THESE VALUES (LEFT)
             } else if (stage == 25) { //Blue detected
                 movement.GetIntoBoxF();
-                stage = runtime.seconds() >= 1.4 ? 27 : 25;
+                stage = runtime.seconds() >= 0.55 ? 27 : 25;
             } else if (stage == 26) { //Red detected
                 movement.RampUp();
-                stage = runtime.seconds() >= 2.4 ? 27 : 26;
+                stage = runtime.seconds() >= 1.15 ? 27 : 26;
             } else if (stage == 27) {
                 movement.StoptheMotor();
-                stage = runtime.seconds() >= 0.4 ? 28 : 27;
+                stage = runtime.seconds() >= 0.2 ? 28 : 27;
             } else if (stage == 28) {
                 movement.mecanumDrive(0, 0, .5);
-                stage = runtime.seconds() >= 1.2 ? 29 : 28;
+                stage = runtime.seconds() >= 1.1 ? 29 : 28;
             } else if (stage == 29) {
                 movement.StoptheMotor();
-                stage = runtime.seconds() >= 1 ? 30 : 29;
+                stage = runtime.seconds() >= 0.5 ? 30 : 29;
             } else if (stage == 30) {
                 movement.VerytinyF();
-                stage = runtime.seconds() >= 1 ? 200 : 30;
+                stage = runtime.seconds() >= 2.5 ? 200 : 30;
 
 
-                //Code for the CENTER Block
+                //Code for the RIGHT Block
             } else if (stage == 50) {
-                lift.setSetpoint(10);
+                lift.setSetpoint(-10);
                 stage = runtime.seconds() >= 1 ? 51 : 50;
             } else if (stage == 51) {
                 lift.closeClaw(); // Grab the block before moving
                 stage = runtime.seconds() >= 1.2 ? 52 : 51; // Wait 0.5 seconds
             } else if (stage == 52) {
-                lift.setSetpoint(1000); // Raise the lift with the now grabbed block
+                lift.setSetpoint(-1000); // Raise the lift with the now grabbed block
                 stage = runtime.seconds() >= 1.3 ? 53 : 52; // Wait for the lift to go up
             } else if (stage == 53) {
                 stage = runtime.seconds() >= 0.1 ? 54 : 53;
@@ -301,7 +301,7 @@ public class RedLeft extends LinearOpMode {
                 stage = runtime.seconds() >= 1 ? 61 : 59;
             } else if (stage == 60) { //Blue detected
                 movement.GetIntoBoxF();
-                stage = runtime.seconds() >= 0.6 ? 62 : 60;
+                stage = runtime.seconds() >= 0.25 ? 62 : 60;
             } else if (stage == 61) { //Red detected
                 movement.RampUp();
                 stage = runtime.seconds() >= 0.9 ? 62 : 61;
@@ -318,15 +318,15 @@ public class RedLeft extends LinearOpMode {
                 movement.VerytinyF();
                 stage = runtime.seconds() >= 1 ? 200 : 65;
 
-                //Code for LEFT Block
+                //Code for CENTER Block
             } else if (stage == 90) {
-                lift.setSetpoint(10);
+                lift.setSetpoint(-10);
                 stage = runtime.seconds() >= 1 ? 91 : 90;
             } else if (stage == 91) {
                 lift.closeClaw(); // Grab the block before moving
                 stage = runtime.seconds() >= 1.2 ? 92 : 91; // Wait 0.5 seconds
             } else if (stage == 92) {
-                lift.setSetpoint(1000); // Raise the lift with the now grabbed block
+                lift.setSetpoint(-1000); // Raise the lift with the now grabbed block
                 stage = runtime.seconds() >= 1.3 ? 93 : 92; // Wait for the lift to go up
             } else if (stage == 93) {
                 stage = runtime.seconds() >= 0.1 ? 94 : 93;
@@ -340,7 +340,7 @@ public class RedLeft extends LinearOpMode {
                 stage = runtime.seconds() >= 0.22 ? 98 : 96;
             } else if (stage == 97) { // Red detected (Not blue)
                 movement.BackwardKnock();
-                stage = runtime.seconds() >= 0.22 ? 99 : 97;
+                stage = runtime.seconds() >= 0.17 ? 99 : 97;
             } else if (stage == 98) { // Blue detected
                 movement.StoptheMotor();
                 jewelArm.armUp();
@@ -351,25 +351,26 @@ public class RedLeft extends LinearOpMode {
                 stage = runtime.seconds() >= 1 ? 101 : 99;
             } else if (stage == 100) { //Blue detected
                 movement.GetIntoBoxF();
-                stage = runtime.seconds() >= 0.9 ? 102 : 100;
+                stage = runtime.seconds() >= 0.25 ? 102 : 100;
             } else if (stage == 101) { //Red detected
                 movement.RampUp();
-                stage = runtime.seconds() >= 1.2 ? 102 : 101;
+                stage = runtime.seconds() >= 0.65 ? 102 : 101;
             } else if (stage == 102) {
                 movement.StoptheMotor();
+                stage = runtime.seconds() >= 0.2 ? 103 : 102;
             } else if (stage == 103) {
                 movement.mecanumDrive(0, 0, .5);
-                stage = runtime.seconds() > 1.2 ? 104 : 103;
+                stage = runtime.seconds() > 1.1 ? 104 : 103;
             } else if (stage == 104) {
                 movement.StoptheMotor();
-                stage = runtime.seconds() > 1 ? 105 : 104;
+                stage = runtime.seconds() > 0.5 ? 105 : 104;
             } else if (stage == 105) {
                 movement.VerytinyF();
-                stage = runtime.seconds() > 1 ? 200 : 105;
+                stage = runtime.seconds() > 2.5 ? 200 : 105;
 
                 //Ending program for all functions
             } else if (stage == 200) {
-                lift.setSetpoint(10);
+                lift.setSetpoint(-10);
                 movement.StoptheMotor();
                 stage = runtime.seconds() >= 1.2 ? 201 : 200;
             } else if (stage == 201) {

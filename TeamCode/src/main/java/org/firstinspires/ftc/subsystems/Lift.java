@@ -74,13 +74,13 @@ public class Lift {
         updateSetpoint();
     }
 
-    public void updateSetpoint() {
+    public void updateSetpoint() {      //FIX ALL LIFT VALUES
         if (position == 0) {
-            setSetpoint(7);
+            setSetpoint(-10);
         } else if (position == 1) {
-            setSetpoint(1300);
+            setSetpoint(-1150);
         } else if (position == 2) {
-            setSetpoint(2600);
+            setSetpoint(-1930);
         }
     }
 

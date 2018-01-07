@@ -35,7 +35,7 @@ public class Relic {
     }
 
     public void relicDrive(double q) {          //Check if this works
-        relicMotor.setPower(q);
+        relicMotor.setPower(normalize(q));
     }
 
     public void relicClose() {
@@ -46,6 +46,16 @@ public class Relic {
     public void relicOpen() {
         //relicLeft.setPosition(0.2);
         //relicRight.setPosition(0.2);
+    }
+
+    private double normalize(double number) {
+        if (number > 1) {
+            return 1;
+        } else if (number < -1) {
+            return -1;
+        } else {
+            return number;
+        }
     }
 
 }

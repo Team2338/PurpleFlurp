@@ -44,17 +44,17 @@ public class Drivetrain {
     private double maxSpeed = 0.9;
 
     private Drivetrain() {
-        resetEncoders();
+       // resetEncoders();
 
         frontLeft.setDirection(DcMotor.Direction.FORWARD);
         frontRight.setDirection(DcMotor.Direction.FORWARD);
         rearLeft.setDirection(DcMotor.Direction.FORWARD);
         rearRight.setDirection(DcMotor.Direction.FORWARD);
 
-        frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rearLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rearRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        frontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        frontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rearLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rearRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -144,10 +144,10 @@ public class Drivetrain {
     }
 
     public void VerytinyF () {
-        frontRight.setPower(-0.1);
-        frontLeft.setPower(0.1);
-        rearRight.setPower(-0.1);
-        rearLeft.setPower(0.1);
+        frontRight.setPower(-0.2);
+        frontLeft.setPower(0.2);
+        rearRight.setPower(-0.2);
+        rearLeft.setPower(0.2);
     }
 
     public void VerytinyB () {
