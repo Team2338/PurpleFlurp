@@ -65,6 +65,7 @@ public class DefaultTeleOp extends OpMode {
     private Relic relic;
 
     private boolean padPressed = false;
+    private boolean turnon = false;
 
     /*
      * Code to run ONCE when the driver hits INIT
@@ -106,7 +107,28 @@ public class DefaultTeleOp extends OpMode {
         drivetrain.mecanumDrive(gamepad1.left_stick_x, -gamepad1.left_stick_y, gamepad1.right_stick_x);
 
         //Relic
-        relic.relicDrive(-gamepad2.left_stick_y);
+        if (gamepad1.a) {
+            if (!turnon) {
+                turnon = true;
+            }
+        }
+
+        if (gamepad1.b) {
+            if (turnon) {
+                turnon = false;
+            }
+        }
+
+        if (turnon) {
+            relic.activateArm();
+            relic.relicDrive(-gamepad2.left_stick_y);
+        }
+
+        if (!turnon) {
+            relic.deactivateArm();
+        }
+
+        relic.relicExtension(-gamepad2.right_stick_y);
 
         // Lift Mechanism
         if (gamepad2.dpad_up) {
@@ -126,6 +148,12 @@ public class DefaultTeleOp extends OpMode {
             lift.openClaw();
         } else if (gamepad2.right_bumper) {
             lift.closeClaw();
+        }
+
+        if (gamepad1.left_bumper) {
+            relic.relicOpen();
+        } else if (gamepad1.right_bumper) {
+            relic.relicClose();
         }
 
         if (gamepad2.b) {

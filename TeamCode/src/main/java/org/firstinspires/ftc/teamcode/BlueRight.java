@@ -185,13 +185,13 @@ public class BlueRight extends LinearOpMode {
             RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
             if (stage != lastStage) {
                 runtime.reset();
-                movement.resetEncoders();
+              // movement.resetEncoders();
             }
 
             lastStage = stage;
 
             if (stage == 0) {
-                stage = runtime.seconds() > 2 ? 1 : 0;
+                stage = runtime.seconds() > 1 ? 1 : 0;
             } else if (stage == 1) {
 
                 /* Found an instance of the template. In the actual game, you will probably
@@ -230,10 +230,10 @@ public class BlueRight extends LinearOpMode {
                 stage = hsvValues[0] > 120 && hsvValues[0] < 250 ? 21 : 22; // Measure hue and determine stage
             } else if (stage == 21) { // Blue detected
                 movement.BackwardKnock();
-                stage = runtime.seconds() >= 0.22 ? 23 : 21;
+                stage = runtime.seconds() >= 0.2 ? 23 : 21;
             } else if (stage == 22) { // Red detected (Not blue)
                 movement.ForwardKnock();
-                stage = runtime.seconds() >= 0.22 ? 24 : 22;
+                stage = runtime.seconds() >= 0.16 ? 24 : 22;
             } else if (stage == 23) { // Blue detected
                 movement.StoptheMotor();
                 jewelArm.armUp();
@@ -245,22 +245,22 @@ public class BlueRight extends LinearOpMode {
                 //WORK ON THESE VALUES (RIGHT)
             } else if (stage == 25) { //Blue detected
                 movement.GetIntoBoxB();
-                stage = runtime.seconds() >= 1.4 ? 27 : 25;
+                stage = runtime.seconds() >= 1.17 ? 27 : 25;
             } else if (stage == 26) { //Red detected
                 movement.RampBack();
-                stage = runtime.seconds() >= 2.4 ? 27 : 26;
+                stage = runtime.seconds() >= 1.27 ? 27 : 26;
             } else if (stage == 27) {
                 movement.StoptheMotor();
                 stage = runtime.seconds() >= 0.4 ? 28 : 27;
             } else if (stage == 28) {
                 movement.mecanumDrive(0, 0, .5);
-                stage = runtime.seconds() >= 1.7 ? 29 : 28;
+                stage = runtime.seconds() >= 2.1 ? 29 : 28;
             } else if (stage == 29) {
                 movement.StoptheMotor();
                 stage = runtime.seconds() >= 1 ? 30 : 29;
             } else if (stage == 30) {
                 movement.VerytinyF();
-                stage = runtime.seconds() >= 2 ? 200 : 30;
+                stage = runtime.seconds() >= 1.5 ? 200 : 30;
 
 
                 //Code for the CENTER Block
@@ -282,10 +282,10 @@ public class BlueRight extends LinearOpMode {
                 stage = hsvValues[0] > 120 && hsvValues[0] < 250 ? 56 : 57; // Measure hue and determine stage
             } else if (stage == 56) { // Blue detected
                 movement.BackwardKnock();
-                stage = runtime.seconds() >= 0.22 ? 58 : 56;
+                stage = runtime.seconds() >= 0.2 ? 58 : 56;
             } else if (stage == 57) { // Red detected (Not blue)
                 movement.ForwardKnock();
-                stage = runtime.seconds() >= 0.22 ? 59 : 57;
+                stage = runtime.seconds() >= 0.16 ? 59 : 57;
             } else if (stage == 58) { // Blue detected
                 movement.StoptheMotor();
                 jewelArm.armUp();
@@ -332,10 +332,10 @@ public class BlueRight extends LinearOpMode {
                 stage = hsvValues[0] > 120 && hsvValues[0] < 250 ? 96 : 97; // Measure hue and determine stage
             } else if (stage == 96) { // Blue detected
                 movement.BackwardKnock();
-                stage = runtime.seconds() >= 0.22 ? 98 : 96;
+                stage = runtime.seconds() >= 0.2 ? 98 : 96;
             } else if (stage == 97) { // Red detected (Not blue)
                 movement.ForwardKnock();
-                stage = runtime.seconds() >= 0.22 ? 99 : 97;
+                stage = runtime.seconds() >= 0.16 ? 99 : 97;
             } else if (stage == 98) { // Blue detected
                 movement.StoptheMotor();
                 jewelArm.armUp();
@@ -346,25 +346,35 @@ public class BlueRight extends LinearOpMode {
                 stage = runtime.seconds() >= 1 ? 101 : 99;
             } else if (stage == 100) { //Blue detected
                 movement.GetIntoBoxB();
-                stage = runtime.seconds() >= 0.7 ? 102 : 100;
+                stage = runtime.seconds() >= 1.17 ? 102 : 100;
             } else if (stage == 101) { //Red detected
                 movement.RampBack();
-                stage = runtime.seconds() >= 1.2 ? 102 : 101;
+                stage = runtime.seconds() >= 1.27 ? 102 : 101;
             } else if (stage == 102) {
                 movement.StoptheMotor();
+                stage = runtime.seconds() >= 0.2 ? 103 : 102;
             } else if (stage == 103) {
                 movement.mecanumDrive(0, 0, .5);
-                stage = runtime.seconds() > 1.2 ? 104 : 103;
+                stage = runtime.seconds() >= 1.1 ? 104 : 103;
             } else if (stage == 104) {
                 movement.StoptheMotor();
-                stage = runtime.seconds() > 1 ? 105 : 104;
+                stage = runtime.seconds() >= 1 ? 105 : 104;
             } else if (stage == 105) {
                 movement.VerytinyF();
-                stage = runtime.seconds() > 4 ? 200 : 105;
+                stage = runtime.seconds() >= 2 ? 200 : 105;
 
                 //Ending program for all functions
             } else if (stage == 200) {
                 lift.setSetpoint(-10);
+                movement.StoptheMotor();
+                stage = runtime.seconds() >= 0.9 ? 201 : 200;
+            } else if (stage == 201) {
+                lift.openClaw();
+                stage = runtime.seconds() >= 0.4 ? 202 : 201;
+            } else if (stage == 202) {
+                movement.VerytinyB();
+                stage = runtime.seconds() >= 0.3 ? 203 : 202;
+            } else if (stage == 203) {
                 movement.StoptheMotor();
             }
 

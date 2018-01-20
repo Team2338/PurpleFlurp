@@ -151,10 +151,10 @@ public class Drivetrain {
     }
 
     public void VerytinyB () {
-        frontRight.setPower(0.1);
-        frontLeft.setPower(-0.1);
-        rearRight.setPower(0.1);
-        rearLeft.setPower(-0.1);
+        frontRight.setPower(0.3);
+        frontLeft.setPower(-0.3);
+        rearRight.setPower(0.3);
+        rearLeft.setPower(-0.3);
     }
 
     public void GetIntoBoxF () {     //Forward at a higher power than before

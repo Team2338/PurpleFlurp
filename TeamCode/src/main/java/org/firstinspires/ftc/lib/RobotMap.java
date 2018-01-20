@@ -35,9 +35,10 @@ public class RobotMap {
     public static ColorSensor colorSensor;
 
     //Relic Hardware
-    //public static Servo relicLeft;
-    //public static Servo relicRight;
+    public static Servo relicLeft;
+    public static Servo relicRight;
     public static DcMotor relicMotor;
+    public static DcMotor relicExtend;
 
 
     public static void init(HardwareMap map) {
@@ -62,9 +63,10 @@ public class RobotMap {
         colorSensor = map.get(ColorSensor.class, "colorSensor");
 
         //Relic HARDware (ACTIVATE THIS LATER)
-        //relicLeft = map.get(Servo.class, "relicLeft");
-       // relicRight = map.get(Servo.class, "relicRight");
+        relicLeft = map.get(Servo.class, "relicLeft");
+        relicRight = map.get(Servo.class, "relicRight");
        relicMotor = map.get(DcMotor.class, "relicMotor");
+       relicExtend = map.get(DcMotor.class, "relicExtend");
     }
 
 }

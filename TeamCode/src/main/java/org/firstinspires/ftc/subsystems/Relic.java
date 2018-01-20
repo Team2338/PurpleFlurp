@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.lib.PIDController;
 import org.firstinspires.ftc.lib.RobotMap;
 
 /**
@@ -23,38 +24,71 @@ public class Relic {
     }
 
     //ACTIVATE ALL THE ROBOTMAPS WHEN IN USE
-   //private Servo relicLeft = RobotMap.relicLeft;
-    //private Servo relicRight = RobotMap.relicRight;
+   private Servo relicLeft = RobotMap.relicLeft;
+    private Servo relicRight = RobotMap.relicRight;
     private DcMotor relicMotor = RobotMap.relicMotor;
+    private DcMotor relicExtend = RobotMap.relicExtend;
 
+    private double maxSpeed = 0.7;
 
     private Relic() {
         relicMotor.setDirection(DcMotor.Direction.FORWARD);
         relicMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        relicMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        relicMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        //Both motors
+        relicExtend.setDirection(DcMotor.Direction.FORWARD);
+        relicExtend.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        relicExtend.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 
     public void relicDrive(double q) {          //Check if this works
-        relicMotor.setPower(normalize(q));
+        relicMotor.setPower(normalize(q) * maxSpeed);
     }
 
-    public void relicClose() {
-        //relicLeft.setPosition(0);
-        //relicRight.setPosition(0);
+    public void relicExtension (double u) {
+        relicExtend.setPower(extendnormalize(u) * maxSpeed);
     }
 
     public void relicOpen() {
-        //relicLeft.setPosition(0.2);
-        //relicRight.setPosition(0.2);
+        relicLeft.setPosition(0.55);
+        relicRight.setPosition(0.4); // this is good
     }
+
+    public void relicClose() {
+        relicLeft.setPosition(0.77);
+        relicRight.setPosition(0.18); // this is good
+    }
+
+    public void activateArm() {
+        relicMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+    }
+
+    public void deactivateArm() {
+        relicMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+    }
+
 
     private double normalize(double number) {
         if (number > 1) {
             return 1;
         } else if (number < -1) {
             return -1;
+        } else if (number < 0.2 && number >= 0) {
+            return 0.2;
+        } else if (number < 0) {
+            return -0.1;
         } else {
             return number;
+        }
+    }
+
+    private double extendnormalize(double n) {
+        if (n > 1) {
+            return 1;
+        } else if (n < -1) {
+            return -1;
+        } else {
+            return n;
         }
     }
 
