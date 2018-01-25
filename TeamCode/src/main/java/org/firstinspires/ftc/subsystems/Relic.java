@@ -41,8 +41,16 @@ public class Relic {
         relicExtend.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 
+    public double getPosition() {
+        return relicMotor.getCurrentPosition();
+    }
+
     public void relicDrive(double q) {          //Check if this works
         relicMotor.setPower(normalize(q) * maxSpeed);
+    }
+
+    public void relicReverse(double z) {
+        relicMotor.setPower(reversenormalize(z) * maxSpeed);
     }
 
     public void relicExtension (double u) {
@@ -50,8 +58,8 @@ public class Relic {
     }
 
     public void relicOpen() {
-        relicLeft.setPosition(0.55);
-        relicRight.setPosition(0.4); // this is good
+        relicLeft.setPosition(0.65);
+        relicRight.setPosition(0.3); // this is good
     }
 
     public void relicClose() {
@@ -63,22 +71,31 @@ public class Relic {
         relicMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 
-    public void deactivateArm() {
-        relicMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-    }
-
-
     private double normalize(double number) {
         if (number > 1) {
             return 1;
         } else if (number < -1) {
             return -1;
-        } else if (number < 0.2 && number >= 0) {
-            return 0.2;
+        } else if (number < 0.37 && number >= 0) {
+            return 0.37;
         } else if (number < 0) {
             return -0.1;
         } else {
             return number;
+        }
+    }
+
+    private double reversenormalize(double p) {
+        if (p > 1) {
+            return 1;
+        } else if (p < -1) {
+            return -1;
+        } else if (p > -0.37 && p <= 0) {
+            return -0.37;
+        } else if (p > 0) {
+            return 0.1;
+        } else {
+            return p;
         }
     }
 

@@ -80,7 +80,7 @@ public class BlueRight extends LinearOpMode {
     private Drivetrain movement;
     private ElapsedTime runtime = new ElapsedTime();
 
-    private int stage = 0;
+    private int stage = 15;
     private int lastStage = -1;
 
     /**
@@ -190,37 +190,37 @@ public class BlueRight extends LinearOpMode {
 
             lastStage = stage;
 
-            if (stage == 0) {
-                stage = runtime.seconds() > 1 ? 1 : 0;
-            } else if (stage == 1) {
-
-                /* Found an instance of the template. In the actual game, you will probably
-                 * loop until this condition occurs, then move on to act accordingly depending
-                 * on which VuMark was visible. */
-                telemetry.addData("VuMark", "%s visible", vuMark);
-
-                if (vuMark == RelicRecoveryVuMark.RIGHT) {
-                    stage = 15;
-                } else if (vuMark == RelicRecoveryVuMark.LEFT) {
-                    stage = 90;
-                } else if (vuMark == RelicRecoveryVuMark.CENTER) {
-                    stage = 50;
-                } else if (vuMark == RelicRecoveryVuMark.UNKNOWN) {
-                    stage = 5;
-                    //Backup stage # is here
-                }
-            }
+//            if (stage == 0) {
+//                stage = runtime.seconds() > 1 ? 1 : 0;
+//            } else if (stage == 1) {
+//
+//                /* Found an instance of the template. In the actual game, you will probably
+//                 * loop until this condition occurs, then move on to act accordingly depending
+//                 * on which VuMark was visible. */
+//                telemetry.addData("VuMark", "%s visible", vuMark);
+//
+//                if (vuMark == RelicRecoveryVuMark.RIGHT) {
+//                    stage = 15;
+//                } else if (vuMark == RelicRecoveryVuMark.LEFT) {
+//                    stage = 15;
+//                } else if (vuMark == RelicRecoveryVuMark.CENTER) {
+//                    stage = 15;
+//                } else if (vuMark == RelicRecoveryVuMark.UNKNOWN) {
+//                    stage = 15;
+//                    //Backup stage # is here
+//                }
+//            }
 
             //CODE FOR RIGHT BLOCK
             if (stage == 15) {
-                lift.setSetpoint(-10);
-                stage = runtime.seconds() >= 1 ? 16 : 15;
+                lift.powerUp();
+                stage = runtime.seconds() >= 0.4 ? 16 : 15;
             } else if (stage == 16) {
                 lift.closeClaw(); // Grab the block before moving
-                stage = runtime.seconds() >= 1.2 ? 17 : 16; // Wait 0.5 seconds
+                stage = runtime.seconds() >= 1 ? 17 : 16; // Wait 0.5 seconds
             } else if (stage == 17) {
-                lift.setSetpoint(-1000); // Raise the lift with the now grabbed block
-                stage = runtime.seconds() >= 1.3 ? 18 : 17; // Wait for the lift to go up
+                lift.powerDown(); // Raise the lift with the now grabbed block
+                stage = runtime.seconds() >= 0.5 ? 18 : 17; // Wait for the lift to go up
             } else if (stage == 18) {
                 stage = runtime.seconds() >= 0.1 ? 19 : 18;
             } else if (stage == 19) {
@@ -233,7 +233,7 @@ public class BlueRight extends LinearOpMode {
                 stage = runtime.seconds() >= 0.2 ? 23 : 21;
             } else if (stage == 22) { // Red detected (Not blue)
                 movement.ForwardKnock();
-                stage = runtime.seconds() >= 0.16 ? 24 : 22;
+                stage = runtime.seconds() >= 0.14 ? 24 : 22;
             } else if (stage == 23) { // Blue detected
                 movement.StoptheMotor();
                 jewelArm.armUp();
@@ -245,22 +245,22 @@ public class BlueRight extends LinearOpMode {
                 //WORK ON THESE VALUES (RIGHT)
             } else if (stage == 25) { //Blue detected
                 movement.GetIntoBoxB();
-                stage = runtime.seconds() >= 1.17 ? 27 : 25;
+                stage = runtime.seconds() >= 0.9 ? 27 : 25;
             } else if (stage == 26) { //Red detected
                 movement.RampBack();
-                stage = runtime.seconds() >= 1.27 ? 27 : 26;
+                stage = runtime.seconds() >= 0.9 ? 27 : 26;
             } else if (stage == 27) {
                 movement.StoptheMotor();
                 stage = runtime.seconds() >= 0.4 ? 28 : 27;
             } else if (stage == 28) {
                 movement.mecanumDrive(0, 0, .5);
-                stage = runtime.seconds() >= 2.1 ? 29 : 28;
+                stage = runtime.seconds() >= 2.3 ? 29 : 28;
             } else if (stage == 29) {
                 movement.StoptheMotor();
                 stage = runtime.seconds() >= 1 ? 30 : 29;
             } else if (stage == 30) {
                 movement.VerytinyF();
-                stage = runtime.seconds() >= 1.5 ? 200 : 30;
+                stage = runtime.seconds() >= 1 ? 200 : 30;
 
 
                 //Code for the CENTER Block
@@ -365,15 +365,15 @@ public class BlueRight extends LinearOpMode {
 
                 //Ending program for all functions
             } else if (stage == 200) {
-                lift.setSetpoint(-10);
+                lift.powerUp();
                 movement.StoptheMotor();
-                stage = runtime.seconds() >= 0.9 ? 201 : 200;
+                stage = runtime.seconds() >= 0.5 ? 201 : 200;
             } else if (stage == 201) {
                 lift.openClaw();
                 stage = runtime.seconds() >= 0.4 ? 202 : 201;
             } else if (stage == 202) {
                 movement.VerytinyB();
-                stage = runtime.seconds() >= 0.3 ? 203 : 202;
+                stage = runtime.seconds() >= 0.2 ? 203 : 202;
             } else if (stage == 203) {
                 movement.StoptheMotor();
             }

@@ -213,14 +213,14 @@ public class BlueLeft extends LinearOpMode {
 //
             //CODE FOR RIGHT BLOCK - RN we are using this as OLD AUTO
             if (stage == 15) {
-                lift.setSetpoint(-10);
-                stage = runtime.seconds() >= 1 ? 16 : 15;
+                lift.powerUp();
+                stage = runtime.seconds() >= 0.2 ? 16 : 15;
             } else if (stage == 16) {
                 lift.closeClaw(); // Grab the block before moving
                 stage = runtime.seconds() >= 1.2 ? 17 : 16; // Wait 0.5 seconds
             } else if (stage == 17) {
-                lift.setSetpoint(-1000); // Raise the lift with the now grabbed block
-                stage = runtime.seconds() >= 1.3 ? 18 : 17; // Wait for the lift to go up
+                lift.powerDown(); // Raise the lift with the now grabbed block
+                stage = runtime.seconds() >= 0.5 ? 18 : 17; // Wait for the lift to go up
             } else if (stage == 18) {
                 stage = runtime.seconds() >= 0.1 ? 19 : 18;
             } else if (stage == 19) {
@@ -244,27 +244,38 @@ public class BlueLeft extends LinearOpMode {
                 stage = runtime.seconds() >= 1 ? 26 : 24;
                 //WORK ON THESE VALUES (RIGHT)
             } else if (stage == 25) { //Blue detected
-                movement.GetIntoBoxF();
+                movement.GetIntoBoxB();
                 stage = runtime.seconds() >= 0.5 ? 27 : 25;
             } else if (stage == 26) { //Red detected
-                movement.RampUp();
-                stage = runtime.seconds() >= 1.1 ? 27 : 26;
+                movement.RampBack();
+                stage = runtime.seconds() >= 0.95 ? 27 : 26;
             } else if (stage == 27) {
                 movement.StoptheMotor();
                 stage = runtime.seconds() >= 0.4 ? 28 : 27;
             } else if (stage == 28) {
-                movement.mecanumDrive(0, 0, -0.5);
-                stage = runtime.seconds() >= 1.5 ? 29 : 28;
+                movement.mecanumDrive(0, 0, 0.5);
+                stage = runtime.seconds() >= 2.1 ? 29 : 28;
             } else if (stage == 29) {
                 movement.StoptheMotor();
-                stage = runtime.seconds() >= 1 ? 30 : 29;
+                stage = runtime.seconds() >= 0.3 ? 30 : 29;
             } else if (stage == 30) {
-                movement.VerytinyF();
-                stage = runtime.seconds() >= 1 ? 31 : 30;
+                movement.ForwardKnock();
+                stage = runtime.seconds() >= 0.2 ? 31 : 30;
             } else if (stage == 31) {
                 movement.StoptheMotor();
-                stage = runtime.seconds() >= 1 ? 200 : 31;
-
+                stage = runtime.seconds() >= 1 ? 32 : 31;
+            } else if (stage == 32) {
+                movement.mecanumDrive(0, 0, -0.5);
+                stage = runtime.seconds() >= 0.2 ? 33 : 32;
+            } else if (stage == 33) {
+                movement.StoptheMotor();
+                stage = runtime.seconds() >= 0.3 ? 34 : 33;
+            } else if (stage == 34) {
+                movement.VerytinyB();
+                stage = runtime.seconds() >= 2 ? 35 : 34;
+            } else if (stage == 35) {
+                movement.StoptheMotor();
+                stage = runtime.seconds() >= 1 ? 200 : 35;
 //
 //
 //                //Code for the CENTER Block
@@ -401,7 +412,10 @@ public class BlueLeft extends LinearOpMode {
 
                 //Ending program for all functions
             } else if (stage == 200) {
-                lift.setSetpoint(-10);
+                lift.powerUp();
+                movement.StoptheMotor();
+                stage = runtime.seconds() >= 0.5 ? 201 : 200;
+            } else if (stage == 201) {
                 movement.StoptheMotor();
             }
 

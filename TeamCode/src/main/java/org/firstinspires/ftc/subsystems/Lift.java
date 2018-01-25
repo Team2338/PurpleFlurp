@@ -74,6 +74,18 @@ public class Lift {
         updateSetpoint();
     }
 
+    public void powerUp() {
+        lift.setPower(0.9);
+    }
+
+    public void powerDown() {
+        lift.setPower(-0.9);
+    }
+
+    public void noPower() {
+        lift.setPower(0);
+    }
+
     public void updateSetpoint() {
         if (position == 0) {
             setSetpoint(-10);

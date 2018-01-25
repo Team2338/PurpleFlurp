@@ -80,7 +80,7 @@ public class RedRight extends LinearOpMode {
     private Drivetrain movement;
     private ElapsedTime runtime = new ElapsedTime();
 
-    private int stage = 0;
+    private int stage = 15;
     private int lastStage = -1;
 
     /**
@@ -248,25 +248,25 @@ public class RedRight extends LinearOpMode {
                 stage = runtime.seconds() >= 0.5 ? 27 : 25;
             } else if (stage == 26) { //Red detected
                 movement.RampUp();
-                stage = runtime.seconds() >= 1.1 ? 27 : 26;
+                stage = runtime.seconds() >= 0.95 ? 27 : 26;
             } else if (stage == 27) {
                 movement.StoptheMotor();
                 stage = runtime.seconds() >= 0.4 ? 28 : 27;
             } else if (stage == 28) {
                 movement.mecanumDrive(0, 0, -0.5);
-                stage = runtime.seconds() >= 1.8 ? 29 : 28;
+                stage = runtime.seconds() >= 2.1 ? 29 : 28;
             } else if (stage == 29) {
                 movement.StoptheMotor();
                 stage = runtime.seconds() >= 1 ? 30 : 29;
             } else if (stage == 30) {
                 movement.BackwardKnock();
-                stage = runtime.seconds() >= 0.35 ? 31 : 30;
+                stage = runtime.seconds() >= 0.2 ? 31 : 30;
             } else if (stage == 31) {
                 movement.StoptheMotor();
                 stage = runtime.seconds() >= 0.2 ? 32 : 31;
             } else if (stage == 32) {
                 movement.mecanumDrive(0, 0, 0.5);
-                stage = runtime.seconds() >= 1.4 ? 33 : 32;
+                stage = runtime.seconds() >= 0.2 ? 33 : 32;
             } else if (stage == 33) {
                 movement.StoptheMotor();
                 stage = runtime.seconds() >= 0.3 ? 34 : 33;

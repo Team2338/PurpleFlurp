@@ -66,6 +66,7 @@ public class DefaultTeleOp extends OpMode {
 
     private boolean padPressed = false;
     private boolean turnon = false;
+    private boolean reverseC = false;
 
     /*
      * Code to run ONCE when the driver hits INIT
@@ -113,32 +114,36 @@ public class DefaultTeleOp extends OpMode {
             }
         }
 
-        if (gamepad1.b) {
-            if (turnon) {
-                turnon = false;
+        if (turnon) {
+            if (!reverseC) {
+                relic.activateArm();
+                relic.relicDrive(-gamepad2.left_stick_y);
+            } else if (reverseC) {
+                relic.activateArm();
+                relic.relicReverse(-gamepad2.left_stick_y);
             }
         }
 
-        if (turnon) {
-            relic.activateArm();
-            relic.relicDrive(-gamepad2.left_stick_y);
-        }
-
-        if (!turnon) {
-            relic.deactivateArm();
-        }
 
         relic.relicExtension(-gamepad2.right_stick_y);
 
         // Lift Mechanism
-        if (gamepad2.dpad_up) {
-            if (!padPressed) lift.raise();
-            padPressed = true;
-        } else if (gamepad2.dpad_down) {
-            if (!padPressed) lift.lower();
-            padPressed = true;
-        } else if (!gamepad2.dpad_up && !gamepad2.dpad_down) {
-            padPressed = false;
+//        if (gamepad2.dpad_up) {
+//            if (!padPressed) lift.raise();
+//            padPressed = true;
+//        } else if (gamepad2.dpad_down) {
+//            if (!padPressed) lift.lower();
+//            padPressed = true;
+//        } else if (!gamepad2.dpad_up && !gamepad2.dpad_down) {
+//            padPressed = false;
+//        }
+
+        if (gamepad2.dpad_down) {
+            lift.powerUp();
+        } else if (gamepad2.dpad_up) {
+            lift.powerDown();
+        } else {
+            lift.noPower();
         }
 
         lift.update();
@@ -163,6 +168,7 @@ public class DefaultTeleOp extends OpMode {
         // Telemetry
         telemetry.addData("Status", "Run Time: " + runtime.toString());
         telemetry.addData("Lift Position: ", lift.getPosition());
+        telemetry.addData("Relic Position: ", relic.getPosition());
 //        telemetry.addData("frontLeft", drivetrain.getPosition());
 //        telemetry.addData("frontRight", drivetrain.getPosition2());
 //        telemetry.addData("rearRight", drivetrain.getPosition4());

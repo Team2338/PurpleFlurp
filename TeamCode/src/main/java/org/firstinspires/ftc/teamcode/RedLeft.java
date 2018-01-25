@@ -211,7 +211,7 @@ public class RedLeft extends LinearOpMode {
                 } else if (vuMark == RelicRecoveryVuMark.CENTER) {
                     stage = 90;
                 } else if (vuMark == RelicRecoveryVuMark.UNKNOWN) {
-                    stage = 5;
+                    stage = 90;
                     //Backup stage # is here
                 }
             }
@@ -253,7 +253,7 @@ public class RedLeft extends LinearOpMode {
                 stage = runtime.seconds() >= 0.55 ? 27 : 25;
             } else if (stage == 26) { //Red detected
                 movement.RampUp();
-                stage = runtime.seconds() >= 1.15 ? 27 : 26;
+                stage = runtime.seconds() >= 1.23 ? 27 : 26;
             } else if (stage == 27) {
                 movement.StoptheMotor();
                 stage = runtime.seconds() >= 0.2 ? 28 : 27;
@@ -351,7 +351,7 @@ public class RedLeft extends LinearOpMode {
                 stage = runtime.seconds() >= 1 ? 101 : 99;
             } else if (stage == 100) { //Blue detected
                 movement.GetIntoBoxF();
-                stage = runtime.seconds() >= 0.25 ? 102 : 100;
+                stage = runtime.seconds() >= 0.27 ? 102 : 100;
             } else if (stage == 101) { //Red detected
                 movement.RampUp();
                 stage = runtime.seconds() >= 0.65 ? 102 : 101;
@@ -378,7 +378,7 @@ public class RedLeft extends LinearOpMode {
                 stage = runtime.seconds() >= 0.8 ? 202 : 201;
             } else if (stage == 202) {
                 movement.VerytinyB();
-                stage = runtime.seconds() >= 0.3 ? 203 : 202;
+                stage = runtime.seconds() >= 0.2 ? 203 : 202;
             } else if (stage == 203) {
                 movement.StoptheMotor();
             }
