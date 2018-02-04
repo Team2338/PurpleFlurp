@@ -65,6 +65,7 @@ public class DefaultTeleOp extends OpMode {
     private Relic relic;
 
     private boolean padPressed = false;
+    private boolean rPressed = false;
     private boolean turnon = false;
     private boolean reverseC = false;
 
@@ -124,27 +125,38 @@ public class DefaultTeleOp extends OpMode {
             }
         }
 
+        if (relic.getPosition() > 1100 && relic.getPosition() < 1820 ) {
+            if (!reverseC) {
+                reverseC = true;
+            }
+        } else if (relic.getPosition() > -3 && relic.getPosition() < 600) {
+            if (reverseC) {
+                reverseC = false;
+            }
+        }
+
 
         relic.relicExtension(-gamepad2.right_stick_y);
 
         // Lift Mechanism
-//        if (gamepad2.dpad_up) {
-//            if (!padPressed) lift.raise();
-//            padPressed = true;
-//        } else if (gamepad2.dpad_down) {
-//            if (!padPressed) lift.lower();
-//            padPressed = true;
-//        } else if (!gamepad2.dpad_up && !gamepad2.dpad_down) {
-//            padPressed = false;
-//        }
-
-        if (gamepad2.dpad_down) {
-            lift.powerUp();
-        } else if (gamepad2.dpad_up) {
-            lift.powerDown();
-        } else {
-            lift.noPower();
+        if (gamepad2.dpad_up) {
+            if (!padPressed) lift.raise();
+            padPressed = true;
+        } else if (gamepad2.dpad_down) {
+            if (!padPressed) lift.lower();
+            padPressed = true;
+        } else if (!gamepad2.dpad_up && !gamepad2.dpad_down) {
+            padPressed = false;
         }
+
+        //Backup Lift Mechanism
+//        if (gamepad2.dpad_down) {
+//            lift.powerUp();
+//        } else if (gamepad2.dpad_up) {
+//            lift.powerDown();
+//        } else {
+//            lift.noPower();
+//        }
 
         lift.update();
 
@@ -156,9 +168,17 @@ public class DefaultTeleOp extends OpMode {
         }
 
         if (gamepad1.left_bumper) {
-            relic.relicOpen();
+            if (!rPressed) {
+                relic.lower();
+                rPressed = true;
+            }
         } else if (gamepad1.right_bumper) {
-            relic.relicClose();
+            if (!rPressed) {
+                relic.raise();
+                rPressed = true;
+            }
+        } else if (!gamepad1.left_bumper && !gamepad1.right_bumper) {
+            rPressed = false;
         }
 
         if (gamepad2.b) {

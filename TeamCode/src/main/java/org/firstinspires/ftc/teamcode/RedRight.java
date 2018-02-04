@@ -213,13 +213,13 @@ public class RedRight extends LinearOpMode {
 
             //CODE FOR RIGHT BLOCK
             if (stage == 15) {
-                lift.setSetpoint(-10);
+                lift.setSetpoint(20);
                 stage = runtime.seconds() >= 1 ? 16 : 15;
             } else if (stage == 16) {
                 lift.closeClaw(); // Grab the block before moving
                 stage = runtime.seconds() >= 1.2 ? 17 : 16; // Wait 0.5 seconds
             } else if (stage == 17) {
-                lift.setSetpoint(-1000); // Raise the lift with the now grabbed block
+                lift.setSetpoint(1000); // Raise the lift with the now grabbed block
                 stage = runtime.seconds() >= 1.3 ? 18 : 17; // Wait for the lift to go up
             } else if (stage == 18) {
                 stage = runtime.seconds() >= 0.1 ? 19 : 18;
@@ -412,7 +412,7 @@ public class RedRight extends LinearOpMode {
 
                 //Ending program for all functions
             } else if (stage == 200) {
-                lift.setSetpoint(-10);
+                lift.setSetpoint(20);
                 movement.StoptheMotor();
             }
 

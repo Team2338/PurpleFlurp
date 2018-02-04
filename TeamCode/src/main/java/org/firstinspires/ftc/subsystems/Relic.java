@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.lib.PIDController;
 import org.firstinspires.ftc.lib.RobotMap;
@@ -24,12 +25,25 @@ public class Relic {
     }
 
     //ACTIVATE ALL THE ROBOTMAPS WHEN IN USE
-   private Servo relicLeft = RobotMap.relicLeft;
+    private Servo relicLeft = RobotMap.relicLeft;
     private Servo relicRight = RobotMap.relicRight;
     private DcMotor relicMotor = RobotMap.relicMotor;
     private DcMotor relicExtend = RobotMap.relicExtend;
 
     private double maxSpeed = 0.7;
+    private double flipMaxSpeed = 0.85;
+
+    private int position = 0;
+
+    public void relicSetPoint() {
+        if (position == 0) {
+            relicStart();
+        } else if (position == 1) {
+            relicOpen();
+        } else if (position == 2) {
+            relicClose();
+        }
+    }
 
     private Relic() {
         relicMotor.setDirection(DcMotor.Direction.FORWARD);
@@ -46,25 +60,42 @@ public class Relic {
     }
 
     public void relicDrive(double q) {          //Check if this works
-        relicMotor.setPower(normalize(q) * maxSpeed);
+        relicMotor.setPower(normalize(q) * flipMaxSpeed);
     }
 
     public void relicReverse(double z) {
-        relicMotor.setPower(reversenormalize(z) * maxSpeed);
+        relicMotor.setPower(reversenormalize(z) * flipMaxSpeed);
     }
 
-    public void relicExtension (double u) {
+    public void relicExtension(double u) {
         relicExtend.setPower(extendnormalize(u) * maxSpeed);
     }
 
     public void relicOpen() {
-        relicLeft.setPosition(0.65);
+        relicLeft.setPosition(0.7);
         relicRight.setPosition(0.3); // this is good
     }
 
     public void relicClose() {
-        relicLeft.setPosition(0.77);
-        relicRight.setPosition(0.18); // this is good
+        relicLeft.setPosition(1);
+        relicRight.setPosition(0.2); // this is good
+    }
+
+    public void relicStart() {
+        relicLeft.setPosition(0);
+        relicRight.setPosition(0.9);
+    }
+
+    public void raise() { //MAKE THE RELIC LIKE THE LIFT
+        position += 1;
+        position = Range.clip(position, 0, 2);
+        relicSetPoint();
+    }
+
+    public void lower() {
+        position -= 1;
+        position = Range.clip(position, 0, 2);
+        relicSetPoint();
     }
 
     public void activateArm() {

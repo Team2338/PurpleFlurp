@@ -80,7 +80,7 @@ public class BlueLeft extends LinearOpMode {
     private Drivetrain movement;
     private ElapsedTime runtime = new ElapsedTime();
 
-    private int stage = 15;
+    private int stage = 0;
     private int lastStage = -1;
 
     /**
@@ -190,37 +190,37 @@ public class BlueLeft extends LinearOpMode {
 
             lastStage = stage;
 
-//            if (stage == 0) {
-//                stage = runtime.seconds() > 2 ? 1 : 0;
-//            } else if (stage == 1) {
-//
-//                /* Found an instance of the template. In the actual game, you will probably
-//                 * loop until this condition occurs, then move on to act accordingly depending
-//                 * on which VuMark was visible. */
-//                telemetry.addData("VuMark", "%s visible", vuMark);
-//
-//                if (vuMark == RelicRecoveryVuMark.RIGHT) {
-//                    stage = 15;
-//                } else if (vuMark == RelicRecoveryVuMark.LEFT) {
-//                    stage = 90;
-//                } else if (vuMark == RelicRecoveryVuMark.CENTER) {
-//                    stage = 50;
-//                } else if (vuMark == RelicRecoveryVuMark.UNKNOWN) {
-//                    stage = 5;
-//                    //Backup stage # is here
-//                }
-//            }
-//
-            //CODE FOR RIGHT BLOCK - RN we are using this as OLD AUTO
+            if (stage == 0) {
+                stage = runtime.seconds() > 2 ? 1 : 0;
+            } else if (stage == 1) {
+
+                /* Found an instance of the template. In the actual game, you will probably
+                 * loop until this condition occurs, then move on to act accordingly depending
+                 * on which VuMark was visible. */
+                telemetry.addData("VuMark", "%s visible", vuMark);
+
+                if (vuMark == RelicRecoveryVuMark.RIGHT) {
+                    stage = 90;
+                } else if (vuMark == RelicRecoveryVuMark.LEFT) {
+                    stage = 15;
+                } else if (vuMark == RelicRecoveryVuMark.CENTER) {
+                    stage = 50;
+                } else if (vuMark == RelicRecoveryVuMark.UNKNOWN) {
+                    stage = 5;
+                    //Backup stage # is here
+                }
+            }
+
+            //CODE FOR LEFT BLOCK
             if (stage == 15) {
-                lift.powerUp();
-                stage = runtime.seconds() >= 0.2 ? 16 : 15;
+                lift.setSetpoint(20);
+                stage = runtime.seconds() >= 1 ? 16 : 15;
             } else if (stage == 16) {
                 lift.closeClaw(); // Grab the block before moving
                 stage = runtime.seconds() >= 1.2 ? 17 : 16; // Wait 0.5 seconds
             } else if (stage == 17) {
-                lift.powerDown(); // Raise the lift with the now grabbed block
-                stage = runtime.seconds() >= 0.5 ? 18 : 17; // Wait for the lift to go up
+                lift.setSetpoint(1000); // Raise the lift with the now grabbed block
+                stage = runtime.seconds() >= 1 ? 18 : 17; // Wait for the lift to go up
             } else if (stage == 18) {
                 stage = runtime.seconds() >= 0.1 ? 19 : 18;
             } else if (stage == 19) {
@@ -237,7 +237,7 @@ public class BlueLeft extends LinearOpMode {
             } else if (stage == 23) { // Blue detected
                 movement.StoptheMotor();
                 jewelArm.armUp();
-                stage = runtime.seconds() >= 1 ? 25 : 23;
+                stage = runtime.seconds() >= 0.7 ? 25 : 23;
             } else if (stage == 24) { // Red detected
                 movement.StoptheMotor();
                 jewelArm.armUp();
@@ -245,10 +245,10 @@ public class BlueLeft extends LinearOpMode {
                 //WORK ON THESE VALUES (RIGHT)
             } else if (stage == 25) { //Blue detected
                 movement.GetIntoBoxB();
-                stage = runtime.seconds() >= 0.5 ? 27 : 25;
+                stage = runtime.seconds() >= 0.75 ? 27 : 25;
             } else if (stage == 26) { //Red detected
                 movement.RampBack();
-                stage = runtime.seconds() >= 0.95 ? 27 : 26;
+                stage = runtime.seconds() >= 1 ? 27 : 26;
             } else if (stage == 27) {
                 movement.StoptheMotor();
                 stage = runtime.seconds() >= 0.4 ? 28 : 27;
@@ -266,156 +266,201 @@ public class BlueLeft extends LinearOpMode {
                 stage = runtime.seconds() >= 1 ? 32 : 31;
             } else if (stage == 32) {
                 movement.mecanumDrive(0, 0, -0.5);
-                stage = runtime.seconds() >= 0.2 ? 33 : 32;
+                stage = runtime.seconds() >= 0.25 ? 33 : 32;
             } else if (stage == 33) {
                 movement.StoptheMotor();
                 stage = runtime.seconds() >= 0.3 ? 34 : 33;
             } else if (stage == 34) {
                 movement.VerytinyB();
-                stage = runtime.seconds() >= 2 ? 35 : 34;
+                stage = runtime.seconds() >= 1.7 ? 35 : 34;
             } else if (stage == 35) {
                 movement.StoptheMotor();
-                stage = runtime.seconds() >= 1 ? 200 : 35;
-//
-//
-//                //Code for the CENTER Block
-//            } else if (stage == 50) {
-//                lift.setSetpoint(-10);
-//                stage = runtime.seconds() >= 1 ? 51 : 50;
-//            } else if (stage == 51) {
-//                lift.closeClaw(); // Grab the block before moving
-//                stage = runtime.seconds() >= 1.2 ? 52 : 51; // Wait 0.5 seconds
-//            } else if (stage == 52) {
-//                lift.setSetpoint(-1000); // Raise the lift with the now grabbed block
-//                stage = runtime.seconds() >= 1.3 ? 53 : 52; // Wait for the lift to go up
-//            } else if (stage == 53) {
-//                stage = runtime.seconds() >= 0.1 ? 54 : 53;
-//            } else if (stage == 54) {
-//                jewelArm.armDown(); // Lower color sensor
-//                stage = runtime.seconds() >= 0.7 ? 55 : 54; // Wait 0.5 seconds
-//            } else if (stage == 55) {
-//                stage = hsvValues[0] > 120 && hsvValues[0] < 250 ? 56 : 57; // Measure hue and determine stage
-//            } else if (stage == 56) { // Blue detected
-//                movement.ForwardKnock();
-//                stage = runtime.seconds() >= 0.22 ? 58 : 56;
-//            } else if (stage == 57) { // Red detected (Not blue)
-//                movement.BackwardKnock();
-//                stage = runtime.seconds() >= 0.22 ? 59 : 57;
-//            } else if (stage == 58) { // Blue detected
-//                movement.StoptheMotor();
-//                jewelArm.armUp();
-//                stage = runtime.seconds() >= 1 ? 60 : 58;
-//            } else if (stage == 59) { // Red detected
-//                movement.StoptheMotor();
-//                jewelArm.armUp();
-//                stage = runtime.seconds() >= 1 ? 61 : 59;
-//            } else if (stage == 60) { //Blue detected
-//                movement.GetIntoBoxF();
-//                stage = runtime.seconds() >= 0.6 ? 62 : 60;
-//            } else if (stage == 61) { //Red detected
-//                movement.RampUp();
-//                stage = runtime.seconds() >= 0.9 ? 62 : 61;
-//            } else if (stage == 62) {
-//                movement.StoptheMotor();
-//                stage = runtime.seconds() >= 0.4 ? 63 : 62;
-//            } else if (stage == 63) {
-//                movement.mecanumDrive(0, 0, -0.5);
-//                stage = runtime.seconds() >= 1.2 ? 64 : 63;
-//            } else if (stage == 64) {
-//                movement.StoptheMotor();
-//                stage = runtime.seconds() >= 1 ? 65 : 64;
-//            } else if (stage == 65) {
-//                movement.ForwardKnock();
-//                stage = runtime.seconds() >= 0.5 ? 66 : 65;
-//            } else if (stage == 66) {
-//                movement.StoptheMotor();
-//                stage = runtime.seconds() >= 0.2 ? 67 : 66;
-//            } else if (stage == 67) {
-//                movement.mecanumDrive(0, 0, 0.5);
-//                stage = runtime.seconds() >= 1.2 ? 68 : 67;
-//            } else if (stage == 68) {
-//                movement.StoptheMotor();
-//                stage = runtime.seconds() >= 0.4 ? 69 : 68;
-//            } else if (stage == 69) {
-//                movement.VerytinyF();
-//                stage = runtime.seconds() >= 1 ? 200 : 69;
-//
-//
-//                //Code for LEFT Block
-//            } else if (stage == 90) {
-//                lift.setSetpoint(-10);
-//                stage = runtime.seconds() >= 1 ? 91 : 90;
-//            } else if (stage == 91) {
-//                lift.closeClaw(); // Grab the block before moving
-//                stage = runtime.seconds() >= 1.2 ? 92 : 91; // Wait 0.5 seconds
-//            } else if (stage == 92) {
-//                lift.setSetpoint(-1000); // Raise the lift with the now grabbed block
-//                stage = runtime.seconds() >= 1.3 ? 93 : 92; // Wait for the lift to go up
-//            } else if (stage == 93) {
-//                stage = runtime.seconds() >= 0.1 ? 94 : 93;
-//            } else if (stage == 94) {
-//                jewelArm.armDown(); // Lower color sensor
-//                stage = runtime.seconds() >= 0.7 ? 95 : 94; // Wait 0.5 seconds
-//            } else if (stage == 95) {
-//                stage = hsvValues[0] > 120 && hsvValues[0] < 250 ? 96 : 97; // Measure hue and determine stage
-//            } else if (stage == 96) { // Blue detected
-//                movement.ForwardKnock();
-//                stage = runtime.seconds() >= 0.22 ? 98 : 96;
-//            } else if (stage == 97) { // Red detected (Not blue)
-//                movement.BackwardKnock();
-//                stage = runtime.seconds() >= 0.22 ? 99 : 97;
-//            } else if (stage == 98) { // Blue detected
-//                movement.StoptheMotor();
-//                jewelArm.armUp();
-//                stage = runtime.seconds() >= 1 ? 100 : 98;
-//            } else if (stage == 99) { // Red detected
-//                movement.StoptheMotor();
-//                jewelArm.armUp();
-//                stage = runtime.seconds() >= 1 ? 101 : 99;
-//            } else if (stage == 100) { //Blue detected
-//                movement.GetIntoBoxF();
-//                stage = runtime.seconds() >= 0.9 ? 102 : 100;
-//            } else if (stage == 101) { //Red detected
-//                movement.RampUp();
-//                stage = runtime.seconds() >= 1.2 ? 102 : 101;
-//            } else if (stage == 102) {
-//                movement.StoptheMotor();
-//            } else if (stage == 103) {
-//                movement.mecanumDrive(0, 0, .5);
-//                stage = runtime.seconds() >= 1.2 ? 104 : 103;
-//            } else if (stage == 104) {
-//                movement.StoptheMotor();
-//                stage = runtime.seconds() >= 1 ? 105 : 104;
-//            } else if (stage == 105) {
-//                stage = runtime.seconds() >= 0.2 ? 106 : 105;
-//            } else if (stage == 106) {
-//                movement.StoptheMotor();
-//                stage = runtime.seconds() >= 0.3 ? 107 : 106;
-//            } else if (stage == 107) {
-//                movement.ForwardKnock();
-//                stage = runtime.seconds() >= 0.9 ? 108 : 107;
-//            } else if (stage == 108) {
-//                movement.StoptheMotor();
-//                stage = runtime.seconds() >= 0.2 ? 109 : 108;
-//            } else if (stage == 109) {
-//                movement.mecanumDrive(0, 0, 0.5);
-//                stage = runtime.seconds() >= 0.8 ? 110 : 109;
-//            } else if (stage == 110) {
-//                movement.StoptheMotor();
-//                stage = runtime.seconds() >= 0.2 ? 111 : 110;
-//            } else if (stage == 111) {
-//                movement.VerytinyF();
-//                stage = runtime.seconds() >= 1 ? 200 : 111;
+                stage = runtime.seconds() >= 0.4 ? 36 : 35;
+            } else if (stage == 36) {
+                movement.mecanumDrive(0, 0, 0.5);
+                stage = runtime.seconds() >= 0.45 ? 37 : 36;
+            } else if (stage == 37) {
+                movement.StoptheMotor();
+                stage = runtime.seconds() >= 0.2 ? 38 : 37;
+            } else if (stage == 38) {
+                movement.VerytinyF();
+                stage = runtime.seconds() >= 2.5 ? 39 : 38;
+            } else if (stage == 39) {
+                movement.StoptheMotor();
+                stage = runtime.seconds() >= 0.4 ? 200 : 39;
 
 
+                //Fix things below this
+                //Center Pictograph
+            } else if (stage == 50) {
+                lift.setSetpoint(20);
+                stage = runtime.seconds() >= 1 ? 51 : 50;
+            } else if (stage == 51) {
+                lift.closeClaw(); // Grab the block before moving
+                stage = runtime.seconds() >= 1.2 ? 52 : 51; // Wait 0.5 seconds
+            } else if (stage == 52) {
+                lift.setSetpoint(1000); // Raise the lift with the now grabbed block
+                stage = runtime.seconds() >= 1 ? 53 : 52; // Wait for the lift to go up
+            } else if (stage == 53) {
+                stage = runtime.seconds() >= 0.1 ? 54 : 53;
+            } else if (stage == 54) {
+                jewelArm.armDown(); // Lower color sensor
+                stage = runtime.seconds() >= 0.7 ? 55 : 54; // Wait 0.5 seconds
+            } else if (stage == 55) {
+                stage = hsvValues[0] > 120 && hsvValues[0] < 250 ? 56 : 57; // Measure hue and determine stage
+            } else if (stage == 56) { // Blue detected
+                movement.BackwardKnock();
+                stage = runtime.seconds() >= 0.22 ? 58 : 56;
+            } else if (stage == 57) { // Red detected (Not blue)
+                movement.ForwardKnock();
+                stage = runtime.seconds() >= 0.17 ? 59 : 57;
+            } else if (stage == 58) { // Blue detected
+                movement.StoptheMotor();
+                jewelArm.armUp();
+                stage = runtime.seconds() >= 1 ? 60 : 58;
+            } else if (stage == 59) { // Red detected
+                movement.StoptheMotor();
+                jewelArm.armUp();
+                stage = runtime.seconds() >= 1 ? 61 : 59;
+                //WORK ON THESE VALUES (RIGHT)
+            } else if (stage == 60) { //Blue detected
+                movement.GetIntoBoxB();
+                stage = runtime.seconds() >= 0.75 ? 62 : 60;
+            } else if (stage == 61) { //Red detected
+                movement.RampBack();
+                stage = runtime.seconds() >= 1 ? 62 : 61;
+            } else if (stage == 62) {
+                movement.StoptheMotor();
+                stage = runtime.seconds() >= 0.4 ? 63 : 62;
+            } else if (stage == 63) {
+                movement.mecanumDrive(0, 0, 0.5);
+                stage = runtime.seconds() >= 2.1 ? 64 : 63;
+            } else if (stage == 64) {
+                movement.StoptheMotor();
+                stage = runtime.seconds() >= 0.3 ? 65 : 64;
+            } else if (stage == 65) {
+                movement.ForwardKnock();
+                stage = runtime.seconds() >= 0.2 ? 66 : 65;
+            } else if (stage == 66) {
+                movement.StoptheMotor();
+                stage = runtime.seconds() >= 1 ? 67 : 66;
+            } else if (stage == 67) {
+                movement.mecanumDrive(0, 0, -0.5);
+                stage = runtime.seconds() >= 0.2 ? 68 : 67;
+            } else if (stage == 68) {
+                movement.StoptheMotor();
+                stage = runtime.seconds() >= 0.3 ? 69 : 68;
+            } else if (stage == 69) {
+                movement.VerytinyB();
+                stage = runtime.seconds() >= 1.8 ? 70 : 69;
+            } else if (stage == 70) {
+                movement.StoptheMotor();
+                stage = runtime.seconds() >= 0.4 ? 71 : 70;
+            } else if (stage == 71) {
+                movement.mecanumDrive(0, 0, 0.5);
+                stage = runtime.seconds() >= 0.77 ? 72 : 71;
+            } else if (stage == 72) {
+                movement.StoptheMotor();
+                stage = runtime.seconds() >= 0.2 ? 73 : 72;
+            } else if (stage == 73) {
+                movement.VerytinyF();
+                stage = runtime.seconds() >= 1.4 ? 74 : 73;
+            } else if (stage == 74) {
+                movement.StoptheMotor();
+                stage = runtime.seconds() >= 0.4 ? 200 : 74;
 
+//FIX STAGE NUMBERS BEFORE UPLOAD
+                //RIGHT PICTOGRAPH
+            } if (stage == 90) {
+                lift.setSetpoint(20);
+                stage = runtime.seconds() >= 1 ? 91 : 90;
+            } else if (stage == 91) {
+                lift.closeClaw(); // Grab the block before moving
+                stage = runtime.seconds() >= 1.2 ? 92 : 91; // Wait 0.5 seconds
+            } else if (stage == 92) {
+                lift.setSetpoint(1000); // Raise the lift with the now grabbed block
+                stage = runtime.seconds() >= 1 ? 93 : 92; // Wait for the lift to go up
+            } else if (stage == 93) {
+                stage = runtime.seconds() >= 0.1 ? 94 : 93;
+            } else if (stage == 94) {
+                jewelArm.armDown(); // Lower color sensor
+                stage = runtime.seconds() >= 0.7 ? 95 : 94; // Wait 0.5 seconds
+            } else if (stage == 95) {
+                stage = hsvValues[0] > 120 && hsvValues[0] < 250 ? 96 : 97; // Measure hue and determine stage
+            } else if (stage == 96) { // Blue detected
+                movement.BackwardKnock();
+                stage = runtime.seconds() >= 0.22 ? 98 : 96;
+            } else if (stage == 97) { // Red detected (Not blue)
+                movement.ForwardKnock();
+                stage = runtime.seconds() >= 0.17 ? 99 : 97;
+            } else if (stage == 98) { // Blue detected
+                movement.StoptheMotor();
+                jewelArm.armUp();
+                stage = runtime.seconds() >= 1 ? 100 : 98;
+            } else if (stage == 99) { // Red detected
+                movement.StoptheMotor();
+                jewelArm.armUp();
+                stage = runtime.seconds() >= 1 ? 101 : 99;
+                //WORK ON THESE VALUES (RIGHT)
+            } else if (stage == 100) { //Blue detected
+                movement.GetIntoBoxB();
+                stage = runtime.seconds() >= 0.75 ? 102 : 100;
+            } else if (stage == 101) { //Red detected
+                movement.RampBack();
+                stage = runtime.seconds() >= 1 ? 102 : 101;
+            } else if (stage == 102) {
+                movement.StoptheMotor();
+                stage = runtime.seconds() >= 0.4 ? 103 : 102;
+            } else if (stage == 103) {
+                movement.mecanumDrive(0, 0, -0.5);
+                stage = runtime.seconds() >= 2.1 ? 104 : 103;
+            } else if (stage == 104) {
+                movement.StoptheMotor();
+                stage = runtime.seconds() >= 0.3 ? 105 : 104;
+            } else if (stage == 105) {
+                movement.BackwardKnock();
+                stage = runtime.seconds() >= 0.2 ? 106 : 105;
+            } else if (stage == 106) {
+                movement.StoptheMotor();
+                stage = runtime.seconds() >= 0.6 ? 107 : 106;
+            } else if (stage == 107) {
+                movement.mecanumDrive(0, 0, 0.5);
+                stage = runtime.seconds() >= 0.2 ? 108 : 107;
+            } else if (stage == 108) {
+                movement.StoptheMotor();
+                stage = runtime.seconds() >= 0.3 ? 109 : 108;
+            } else if (stage == 109) {
+                movement.VerytinyF();
+                stage = runtime.seconds() >= 1.3 ? 110 : 109;
+            } else if (stage == 110) {
+                movement.StoptheMotor();
+                stage = runtime.seconds() >= 0.4 ? 111 : 110;
+            } else if (stage == 111) {
+                movement.mecanumDrive(0, 0, -0.5);
+                stage = runtime.seconds() >= 1.47 ? 112 : 111;
+            } else if (stage == 112) {
+                movement.StoptheMotor();
+                stage = runtime.seconds() >= 0.2 ? 113 : 112;
+            } else if (stage == 113) {
+                movement.VerytinyF();
+                stage = runtime.seconds() >= 1.7 ? 114 : 113;
+            } else if (stage == 114) {
+                movement.StoptheMotor();
+                stage = runtime.seconds() >= 0.4 ? 200 : 114;
+                //NEED TO ADD OTHER PICTOGRAPHS!!!
 
                 //Ending program for all functions
             } else if (stage == 200) {
-                lift.powerUp();
+                lift.setSetpoint(20);
                 movement.StoptheMotor();
-                stage = runtime.seconds() >= 0.5 ? 201 : 200;
+                stage = runtime.seconds() >= 0.9 ? 201 : 200;
             } else if (stage == 201) {
+                lift.openClaw();
+                stage = runtime.seconds() >= 0.7 ? 202 : 201;
+            } else if (stage == 202) {
+                movement.VerytinyB();
+                stage = runtime.seconds() >= 0.15 ? 203 : 202;
+            } else if (stage == 203) {
                 movement.StoptheMotor();
             }
 

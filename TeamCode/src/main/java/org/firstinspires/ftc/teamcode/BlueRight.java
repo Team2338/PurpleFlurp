@@ -213,13 +213,13 @@ public class BlueRight extends LinearOpMode {
 
             //CODE FOR RIGHT BLOCK
             if (stage == 15) {
-                lift.powerUp();
-                stage = runtime.seconds() >= 0.4 ? 16 : 15;
+                lift.setSetpoint(20);
+                stage = runtime.seconds() >= 1 ? 16 : 15;
             } else if (stage == 16) {
                 lift.closeClaw(); // Grab the block before moving
                 stage = runtime.seconds() >= 1 ? 17 : 16; // Wait 0.5 seconds
             } else if (stage == 17) {
-                lift.powerDown(); // Raise the lift with the now grabbed block
+                lift.setSetpoint(1000); // Raise the lift with the now grabbed block
                 stage = runtime.seconds() >= 0.5 ? 18 : 17; // Wait for the lift to go up
             } else if (stage == 18) {
                 stage = runtime.seconds() >= 0.1 ? 19 : 18;
@@ -265,13 +265,13 @@ public class BlueRight extends LinearOpMode {
 
                 //Code for the CENTER Block
             } else if (stage == 50) {
-                lift.setSetpoint(-10);
+                lift.setSetpoint(20);
                 stage = runtime.seconds() >= 1 ? 51 : 50;
             } else if (stage == 51) {
                 lift.closeClaw(); // Grab the block before moving
                 stage = runtime.seconds() >= 1.2 ? 52 : 51; // Wait 0.5 seconds
             } else if (stage == 52) {
-                lift.setSetpoint(-1000); // Raise the lift with the now grabbed block
+                lift.setSetpoint(1000); // Raise the lift with the now grabbed block
                 stage = runtime.seconds() >= 1.3 ? 53 : 52; // Wait for the lift to go up
             } else if (stage == 53) {
                 stage = runtime.seconds() >= 0.1 ? 54 : 53;
@@ -315,13 +315,13 @@ public class BlueRight extends LinearOpMode {
 
                 //Code for LEFT Block
             } else if (stage == 90) {
-                lift.setSetpoint(-10);
+                lift.setSetpoint(20);
                 stage = runtime.seconds() >= 1 ? 91 : 90;
             } else if (stage == 91) {
                 lift.closeClaw(); // Grab the block before moving
                 stage = runtime.seconds() >= 1.2 ? 92 : 91; // Wait 0.5 seconds
             } else if (stage == 92) {
-                lift.setSetpoint(-1000); // Raise the lift with the now grabbed block
+                lift.setSetpoint(1000); // Raise the lift with the now grabbed block
                 stage = runtime.seconds() >= 1.3 ? 93 : 92; // Wait for the lift to go up
             } else if (stage == 93) {
                 stage = runtime.seconds() >= 0.1 ? 94 : 93;
@@ -365,7 +365,7 @@ public class BlueRight extends LinearOpMode {
 
                 //Ending program for all functions
             } else if (stage == 200) {
-                lift.powerUp();
+                lift.setSetpoint(20);
                 movement.StoptheMotor();
                 stage = runtime.seconds() >= 0.5 ? 201 : 200;
             } else if (stage == 201) {
