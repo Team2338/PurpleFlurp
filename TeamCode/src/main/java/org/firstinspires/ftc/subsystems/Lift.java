@@ -88,11 +88,11 @@ public class Lift {
 
     public void updateSetpoint() {
         if (position == 0) {
-            setSetpoint(20);
+            setSetpoint(-50);
         } else if (position == 1) {
             setSetpoint(950);
         } else if (position == 2) {
-            setSetpoint(1760);
+            setSetpoint(1820);
         }
     }
 
@@ -102,7 +102,7 @@ public class Lift {
     }
 
     public void closeClaw() {
-        left.setPosition(0.22);
+        left.setPosition(0.25);
         right.setPosition(0);
     }
 }

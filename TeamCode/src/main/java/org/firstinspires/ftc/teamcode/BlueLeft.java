@@ -202,18 +202,18 @@ public class BlueLeft extends LinearOpMode {
                 if (vuMark == RelicRecoveryVuMark.RIGHT) {
                     stage = 90;
                 } else if (vuMark == RelicRecoveryVuMark.LEFT) {
-                    stage = 15;
-                } else if (vuMark == RelicRecoveryVuMark.CENTER) {
                     stage = 50;
+                } else if (vuMark == RelicRecoveryVuMark.CENTER) {
+                    stage = 15;
                 } else if (vuMark == RelicRecoveryVuMark.UNKNOWN) {
-                    stage = 5;
+                    stage = 90;
                     //Backup stage # is here
                 }
             }
 
-            //CODE FOR LEFT BLOCK
+            //CODE FOR CENTER BLOCK
             if (stage == 15) {
-                lift.setSetpoint(20);
+                lift.setSetpoint(-50);
                 stage = runtime.seconds() >= 1 ? 16 : 15;
             } else if (stage == 16) {
                 lift.closeClaw(); // Grab the block before moving
@@ -230,7 +230,7 @@ public class BlueLeft extends LinearOpMode {
                 stage = hsvValues[0] > 120 && hsvValues[0] < 250 ? 21 : 22; // Measure hue and determine stage
             } else if (stage == 21) { // Blue detected
                 movement.BackwardKnock();
-                stage = runtime.seconds() >= 0.22 ? 23 : 21;
+                stage = runtime.seconds() >= 0.17 ? 23 : 21;
             } else if (stage == 22) { // Red detected (Not blue)
                 movement.ForwardKnock();
                 stage = runtime.seconds() >= 0.17 ? 24 : 22;
@@ -245,7 +245,7 @@ public class BlueLeft extends LinearOpMode {
                 //WORK ON THESE VALUES (RIGHT)
             } else if (stage == 25) { //Blue detected
                 movement.GetIntoBoxB();
-                stage = runtime.seconds() >= 0.75 ? 27 : 25;
+                stage = runtime.seconds() >= 0.61 ? 27 : 25;
             } else if (stage == 26) { //Red detected
                 movement.RampBack();
                 stage = runtime.seconds() >= 1 ? 27 : 26;
@@ -272,13 +272,13 @@ public class BlueLeft extends LinearOpMode {
                 stage = runtime.seconds() >= 0.3 ? 34 : 33;
             } else if (stage == 34) {
                 movement.VerytinyB();
-                stage = runtime.seconds() >= 1.7 ? 35 : 34;
+                stage = runtime.seconds() >= 1.9 ? 35 : 34;
             } else if (stage == 35) {
                 movement.StoptheMotor();
                 stage = runtime.seconds() >= 0.4 ? 36 : 35;
             } else if (stage == 36) {
                 movement.mecanumDrive(0, 0, 0.5);
-                stage = runtime.seconds() >= 0.45 ? 37 : 36;
+                stage = runtime.seconds() >= 1.35 ? 37 : 36;
             } else if (stage == 37) {
                 movement.StoptheMotor();
                 stage = runtime.seconds() >= 0.2 ? 38 : 37;
@@ -293,7 +293,7 @@ public class BlueLeft extends LinearOpMode {
                 //Fix things below this
                 //Center Pictograph
             } else if (stage == 50) {
-                lift.setSetpoint(20);
+                lift.setSetpoint(-50);
                 stage = runtime.seconds() >= 1 ? 51 : 50;
             } else if (stage == 51) {
                 lift.closeClaw(); // Grab the block before moving
@@ -325,7 +325,7 @@ public class BlueLeft extends LinearOpMode {
                 //WORK ON THESE VALUES (RIGHT)
             } else if (stage == 60) { //Blue detected
                 movement.GetIntoBoxB();
-                stage = runtime.seconds() >= 0.75 ? 62 : 60;
+                stage = runtime.seconds() >= 0.61 ? 62 : 60;
             } else if (stage == 61) { //Red detected
                 movement.RampBack();
                 stage = runtime.seconds() >= 1 ? 62 : 61;
@@ -358,7 +358,7 @@ public class BlueLeft extends LinearOpMode {
                 stage = runtime.seconds() >= 0.4 ? 71 : 70;
             } else if (stage == 71) {
                 movement.mecanumDrive(0, 0, 0.5);
-                stage = runtime.seconds() >= 0.77 ? 72 : 71;
+                stage = runtime.seconds() >= 0.85 ? 72 : 71;
             } else if (stage == 72) {
                 movement.StoptheMotor();
                 stage = runtime.seconds() >= 0.2 ? 73 : 72;
@@ -371,8 +371,8 @@ public class BlueLeft extends LinearOpMode {
 
 //FIX STAGE NUMBERS BEFORE UPLOAD
                 //RIGHT PICTOGRAPH
-            } if (stage == 90) {
-                lift.setSetpoint(20);
+            } else if (stage == 90) {
+                lift.setSetpoint(-50);
                 stage = runtime.seconds() >= 1 ? 91 : 90;
             } else if (stage == 91) {
                 lift.closeClaw(); // Grab the block before moving
@@ -404,7 +404,7 @@ public class BlueLeft extends LinearOpMode {
                 //WORK ON THESE VALUES (RIGHT)
             } else if (stage == 100) { //Blue detected
                 movement.GetIntoBoxB();
-                stage = runtime.seconds() >= 0.75 ? 102 : 100;
+                stage = runtime.seconds() >= 0.6 ? 102 : 100;
             } else if (stage == 101) { //Red detected
                 movement.RampBack();
                 stage = runtime.seconds() >= 1 ? 102 : 101;
@@ -451,7 +451,7 @@ public class BlueLeft extends LinearOpMode {
 
                 //Ending program for all functions
             } else if (stage == 200) {
-                lift.setSetpoint(20);
+                lift.setSetpoint(-50);
                 movement.StoptheMotor();
                 stage = runtime.seconds() >= 0.9 ? 201 : 200;
             } else if (stage == 201) {

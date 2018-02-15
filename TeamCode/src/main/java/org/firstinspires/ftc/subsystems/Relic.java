@@ -110,7 +110,7 @@ public class Relic {
         } else if (number < 0.37 && number >= 0) {
             return 0.37;
         } else if (number < 0) {
-            return -0.1;
+            return 0;
         } else {
             return number;
         }
@@ -124,7 +124,7 @@ public class Relic {
         } else if (p > -0.37 && p <= 0) {
             return -0.37;
         } else if (p > 0) {
-            return 0.1;
+            return 0;
         } else {
             return p;
         }

@@ -213,7 +213,7 @@ public class RedRight extends LinearOpMode {
 
             //CODE FOR RIGHT BLOCK
             if (stage == 15) {
-                lift.setSetpoint(20);
+                lift.setSetpoint(-50);
                 stage = runtime.seconds() >= 1 ? 16 : 15;
             } else if (stage == 16) {
                 lift.closeClaw(); // Grab the block before moving
@@ -272,7 +272,7 @@ public class RedRight extends LinearOpMode {
                 stage = runtime.seconds() >= 0.3 ? 34 : 33;
             } else if (stage == 34) {
                 movement.VerytinyF();
-                stage = runtime.seconds() >= 2 ? 35 : 34;
+                stage = runtime.seconds() >= 1.4 ? 35 : 34;
             } else if (stage == 35) {
                 movement.StoptheMotor();
                 stage = runtime.seconds() >= 1 ? 200 : 35;
@@ -412,7 +412,36 @@ public class RedRight extends LinearOpMode {
 
                 //Ending program for all functions
             } else if (stage == 200) {
-                lift.setSetpoint(20);
+                movement.StoptheMotor();
+                stage = runtime.seconds() >= 0.3 ? 201 : 202;
+            } else if (stage == 201) {
+                movement.VerytinyB();
+                stage = runtime.seconds() >= 0.7 ? 202 : 201;
+            } else if (stage == 202) {
+                movement.StoptheMotor();
+                stage = runtime.seconds() >= 0.4 ? 203 : 202;
+            } else if (stage == 203) {
+                movement.mecanumDrive(0, 0, 0.5);
+                stage = runtime.seconds() >= 1 ? 204 : 203;
+            } else if (stage == 204) {
+                movement.StoptheMotor();
+                stage = runtime.seconds() >= 0.5 ? 205 : 204;
+            } else if (stage == 205) {
+                movement.VerytinyF();
+                stage = runtime.seconds() >= 1.5 ? 206 : 205;
+            } else if (stage == 206) {
+                movement.StoptheMotor();
+                stage = runtime.seconds() >= 0.4 ? 207 : 206;
+            } else if (stage == 207) {
+                lift.setSetpoint(-50);
+                stage = runtime.seconds() >= 1.2 ? 208 : 207;
+            } else if (stage == 208) {
+                lift.openClaw();
+                stage = runtime.seconds() >= 0.8 ? 209 : 208;
+            } else if (stage == 209) {
+                movement.VerytinyB();
+                stage = runtime.seconds() >= 0.2 ? 210 : 209;
+            } else if (stage == 210) {
                 movement.StoptheMotor();
             }
 

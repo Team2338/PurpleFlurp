@@ -211,14 +211,14 @@ public class RedLeft extends LinearOpMode {
                 } else if (vuMark == RelicRecoveryVuMark.CENTER) {
                     stage = 90;
                 } else if (vuMark == RelicRecoveryVuMark.UNKNOWN) {
-                    stage = 90;
+                    stage = 15;
                     //Backup stage # is here
                 }
             }
 
             //CODE FOR LEFT BLOCK - THIS ONE WORKS
             if (stage == 15) {
-                lift.setSetpoint(20);
+                lift.setSetpoint(-50);
                 stage = runtime.seconds() >= 1 ? 16 : 15;
             } else if (stage == 16) {
                 lift.closeClaw(); // Grab the block before moving
@@ -238,7 +238,7 @@ public class RedLeft extends LinearOpMode {
                 stage = runtime.seconds() >= 0.22 ? 23 : 21;
             } else if (stage == 22) { // Red detected (Not blue)
                 movement.BackwardKnock();
-                stage = runtime.seconds() >= 0.12 ? 24 : 22;
+                stage = runtime.seconds() >= 0.1 ? 24 : 22;
             } else if (stage == 23) { // Blue detected
                 movement.StoptheMotor();
                 jewelArm.armUp();
@@ -250,10 +250,10 @@ public class RedLeft extends LinearOpMode {
                 //WORK ON THESE VALUES (LEFT)
             } else if (stage == 25) { //Blue detected
                 movement.GetIntoBoxF();
-                stage = runtime.seconds() >= 0.55 ? 27 : 25;
+                stage = runtime.seconds() >= 0.57 ? 27 : 25;
             } else if (stage == 26) { //Red detected
                 movement.RampUp();
-                stage = runtime.seconds() >= 1.18 ? 27 : 26;
+                stage = runtime.seconds() >= 1.2 ? 27 : 26;
             } else if (stage == 27) {
                 movement.StoptheMotor();
                 stage = runtime.seconds() >= 0.2 ? 28 : 27;
@@ -270,7 +270,7 @@ public class RedLeft extends LinearOpMode {
 
                 //Code for the RIGHT Block
             } else if (stage == 50) {
-                lift.setSetpoint(20);
+                lift.setSetpoint(-50);
                 stage = runtime.seconds() >= 1 ? 51 : 50;
             } else if (stage == 51) {
                 lift.closeClaw(); // Grab the block before moving
@@ -290,7 +290,7 @@ public class RedLeft extends LinearOpMode {
                 stage = runtime.seconds() >= 0.2 ? 58 : 56;
             } else if (stage == 57) { // Red detected (Not blue)
                 movement.BackwardKnock();
-                stage = runtime.seconds() >= 0.12 ? 59 : 57;
+                stage = runtime.seconds() >= 0.1 ? 59 : 57;
             } else if (stage == 58) { // Blue detected
                 movement.StoptheMotor();
                 jewelArm.armUp();
@@ -301,16 +301,16 @@ public class RedLeft extends LinearOpMode {
                 stage = runtime.seconds() >= 1 ? 61 : 59;
             } else if (stage == 60) { //Blue detected
                 movement.GetIntoBoxF();
-                stage = runtime.seconds() >= 0.75 ? 62 : 60;
+                stage = runtime.seconds() >= 0.7 ? 62 : 60;
             } else if (stage == 61) { //Red detected
                 movement.RampUp();
-                stage = runtime.seconds() >= 1.2 ? 62 : 61;
+                stage = runtime.seconds() >= 1.25 ? 62 : 61;
             } else if (stage == 62) {
                 movement.StoptheMotor();
                 stage = runtime.seconds() >= 0.4 ? 63 : 62;
             } else if (stage == 63) {
                 movement.mecanumDrive(0, 0, .5);
-                stage = runtime.seconds() >= 2.48 ? 64 : 63;
+                stage = runtime.seconds() >= 2.63 ? 64 : 63;
             } else if (stage == 64) {
                 movement.StoptheMotor();
                 stage = runtime.seconds() >= 0.4 ? 65 : 64;
@@ -320,7 +320,7 @@ public class RedLeft extends LinearOpMode {
 
                 //Code for CENTER Block
             } else if (stage == 90) {
-                lift.setSetpoint(20);
+                lift.setSetpoint(-50);
                 stage = runtime.seconds() >= 1 ? 91 : 90;
             } else if (stage == 91) {
                 lift.closeClaw(); // Grab the block before moving
@@ -340,7 +340,7 @@ public class RedLeft extends LinearOpMode {
                 stage = runtime.seconds() >= 0.2 ? 98 : 96;
             } else if (stage == 97) { // Red detected (Not blue)
                 movement.BackwardKnock();
-                stage = runtime.seconds() >= 0.12 ? 99 : 97;
+                stage = runtime.seconds() >= 0.1 ? 99 : 97;
             } else if (stage == 98) { // Blue detected
                 movement.StoptheMotor();
                 jewelArm.armUp();
@@ -354,13 +354,13 @@ public class RedLeft extends LinearOpMode {
                 stage = runtime.seconds() >= 0.33 ? 102 : 100;
             } else if (stage == 101) { //Red detected
                 movement.RampUp();
-                stage = runtime.seconds() >= 0.7 ? 102 : 101;
+                stage = runtime.seconds() >= 0.58 ? 102 : 101;
             } else if (stage == 102) {
                 movement.StoptheMotor();
                 stage = runtime.seconds() >= 0.2 ? 103 : 102;
             } else if (stage == 103) {
                 movement.mecanumDrive(0, 0, .5);
-                stage = runtime.seconds() > 1.2 ? 104 : 103;
+                stage = runtime.seconds() > 1.3 ? 104 : 103;
             } else if (stage == 104) {
                 movement.StoptheMotor();
                 stage = runtime.seconds() > 0.5 ? 105 : 104;
@@ -370,7 +370,7 @@ public class RedLeft extends LinearOpMode {
 
                 //Ending program for all functions
             } else if (stage == 200) {
-                lift.setSetpoint(20);
+                lift.setSetpoint(-50);
                 movement.StoptheMotor();
                 stage = runtime.seconds() >= 1.2 ? 201 : 200;
             } else if (stage == 201) {
