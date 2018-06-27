@@ -80,12 +80,12 @@ public class RedLeft extends LinearOpMode {
 
     OpenGLMatrix lastLocation = null;
 
-    private JewelArm jewelArm;
-    private Lift lift;
+    private JewelArm jewelArm; //These define a variable that is used in redLeft (JewelArm) as the variable defined in the subsystem (jewelArm)
+    private Lift lift;  //private means it is only for this class, not for others
     private Drivetrain movement;
     private ElapsedTime runtime = new ElapsedTime();
 
-    private int stage = 0;
+    private int stage = 0; //setting up starting stage #
     private int lastStage = -1;
 
     /**
@@ -97,14 +97,13 @@ public class RedLeft extends LinearOpMode {
     //DistanceSensor distanceSensor;
 
     @Override
-    public void runOpMode() {
+    public void runOpMode() { //when the program is started, this is run
 
-        RobotMap.init(hardwareMap);
+        RobotMap.init(hardwareMap); //getInstance uses subsystems to
         jewelArm = JewelArm.getInstance();
         lift = Lift.getInstance();
         movement = Drivetrain.getInstance();
 
-        //distanceSensor = hardwareMap.get(DistanceSensor.class, "colorSensor");
 
         float hsvValues[] = {0F, 0F, 0F};
 
@@ -121,7 +120,7 @@ public class RedLeft extends LinearOpMode {
          */
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
-
+        //Sets up Vuforia
         // OR...  Do Not Activate the Camera Monitor View, to save power
         // VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
 
@@ -161,15 +160,15 @@ public class RedLeft extends LinearOpMode {
         VuforiaTrackable relicTemplate = relicTrackables.get(0);
         relicTemplate.setName("relicVuMarkTemplate"); // can help in debugging; otherwise not necessary
 
-        telemetry.addData(">", "Press Play to start");
+        telemetry.addData(">", "Press Play to start"); //Displays this on the phone when the code reaches here
         telemetry.update();
         waitForStart();
 
         relicTrackables.activate();
 
-        while (opModeIsActive()) {
+        while (opModeIsActive()) { //runs this code when it is started
 
-            Color.RGBToHSV((int) (jewelArm.colorSensor.red() * SCALE_FACTOR),
+            Color.RGBToHSV((int) (jewelArm.colorSensor.red() * SCALE_FACTOR), //ScaleFactor is a variable that is multiplied to the readings to convert RGB to HSV values
                     (int) (jewelArm.colorSensor.green() * SCALE_FACTOR),
                     (int) (jewelArm.colorSensor.blue() * SCALE_FACTOR),
                     hsvValues);
@@ -187,15 +186,15 @@ public class RedLeft extends LinearOpMode {
              * UNKNOWN, LEFT, CENTER, and RIGHT. When a VuMark is visible, something other than
              * UNKNOWN will be returned by {@link RelicRecoveryVuMark#from(VuforiaTrackable)}.
              */
-            RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
-            if (stage != lastStage) {
+            RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate); //if statements start here
+            if (stage != lastStage) { //this resets the runtime every time it moves from one stage to another
                 runtime.reset();
                 //movement.resetEncoders();
             }
 
             lastStage = stage;
 
-            if (stage == 0) {
+            if (stage == 0) { //waits for a second here, then reads Vumark in stage 1. Depending on that, it moves to a stage.
                 stage = runtime.seconds() > 1 ? 1 : 0;
             } else if (stage == 1) {
 
@@ -217,8 +216,8 @@ public class RedLeft extends LinearOpMode {
             }
 
             //CODE FOR LEFT BLOCK - THIS ONE WORKS
-            if (stage == 15) {
-                lift.setSetpoint(-50);
+            if (stage == 15) { //Stages work by moving from stage to stage. stage = runtime.seconds is the seconds. The ? 16 : 15 means if the runtime is true go to 16, if not stay at 16
+                lift.setSetpoint(-50); //All the names below (armDown, closeClaw, etc) were all named using subsystems to make it easier to code
                 stage = runtime.seconds() >= 1 ? 16 : 15;
             } else if (stage == 16) {
                 lift.closeClaw(); // Grab the block before moving

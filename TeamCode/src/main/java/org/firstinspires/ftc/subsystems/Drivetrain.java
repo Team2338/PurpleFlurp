@@ -22,14 +22,14 @@ public class Drivetrain {
         return instance;
     }
 
-    private DcMotor frontLeft = RobotMap.frontLeft;
+    private DcMotor frontLeft = RobotMap.frontLeft; //privately names the DcMotor frontleft as the frontLeft that is shown in RobotMap. The phone is used the name the robotmap frontleft
     private DcMotor frontRight = RobotMap.frontRight;
     private DcMotor rearLeft = RobotMap.rearLeft;
     private DcMotor rearRight = RobotMap.rearRight;
 
     private BNO055IMU imu = RobotMap.imu;
 
-	private final double driveP = 0.01;
+	private final double driveP = 0.01; //pid stuff
 	private final double driveI = 0;
 	private final double driveD = 0;
 
@@ -39,14 +39,14 @@ public class Drivetrain {
 	private final double rotateI = 0;
 	private final double rotateD = 0;
 
-	private PIDController rotatePID = new PIDController(rotateP, rotateI, rotateD);
+	private PIDController rotatePID = new PIDController(rotateP, rotateI, rotateD); //calls on a custom pid controller
 
     private double maxSpeed = 0.9;
 
     private Drivetrain() {
        // resetEncoders();
 
-        frontLeft.setDirection(DcMotor.Direction.FORWARD);
+        frontLeft.setDirection(DcMotor.Direction.FORWARD); //sets the
         frontRight.setDirection(DcMotor.Direction.FORWARD);
         rearLeft.setDirection(DcMotor.Direction.FORWARD);
         rearRight.setDirection(DcMotor.Direction.FORWARD);
@@ -143,7 +143,7 @@ public class Drivetrain {
         rearLeft.setPower(0.4);
     }
 
-    public void VerytinyF () {
+    public void VerytinyF () { //Very low power
         frontRight.setPower(-0.2);
         frontLeft.setPower(0.2);
         rearRight.setPower(-0.2);

@@ -59,12 +59,12 @@ public class DefaultTeleOp extends OpMode {
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
 
-    private Drivetrain drivetrain;
+    private Drivetrain drivetrain; //again naming variables (see RedLeft)
     private Lift lift;
     private JewelArm jewelArm;
     private Relic relic;
 
-    private boolean padPressed = false;
+    private boolean padPressed = false; //Booleans are entities that can be true or false and are used if a button is pressed
     private boolean rPressed = false;
     private boolean turnon = false;
     private boolean reverseC = false;
@@ -106,16 +106,16 @@ public class DefaultTeleOp extends OpMode {
     @Override
     public void loop() {
         // Movement
-        drivetrain.mecanumDrive(gamepad1.left_stick_x, -gamepad1.left_stick_y, gamepad1.right_stick_x);
+        drivetrain.mecanumDrive(gamepad1.left_stick_x, -gamepad1.left_stick_y, gamepad1.right_stick_x); //calls on subsystem drivetrain and sets x,y,x
 
         //Relic
-        if (gamepad1.a) {
+        if (gamepad1.a) { //if A is pressed the boolean turnon is set as true if it is false
             if (!turnon) {
                 turnon = true;
             }
         }
 
-        if (turnon) {
+        if (turnon) { //turnon is when the relic arm is on. If so reverseC sets the direction of the motor spinning
             if (!reverseC) {
                 relic.activateArm();
                 relic.relicDrive(-gamepad2.left_stick_y);
@@ -125,7 +125,7 @@ public class DefaultTeleOp extends OpMode {
             }
         }
 
-        if (relic.getPosition() > 1100 && relic.getPosition() < 1820 ) {
+        if (relic.getPosition() > 1100 && relic.getPosition() < 1820 ) { //uses encoder positions to automatically set the direction of the motor of the relicarm
             if (!reverseC) {
                 reverseC = true;
             }
@@ -136,11 +136,11 @@ public class DefaultTeleOp extends OpMode {
         }
 
 
-        relic.relicExtension(-gamepad2.right_stick_y);
+        relic.relicExtension(-gamepad2.right_stick_y); //controls the relic extension using this right stick
 
         // Lift Mechanism
         if (gamepad2.dpad_up) {
-            if (!padPressed) lift.raise();
+            if (!padPressed) lift.raise(); //this is how the lift raises in increments, using booleans and another if statement
             padPressed = true;
         } else if (gamepad2.dpad_down) {
             if (!padPressed) lift.lower();
@@ -177,7 +177,7 @@ public class DefaultTeleOp extends OpMode {
                 relic.raise();
                 rPressed = true;
             }
-        } else if (!gamepad1.left_bumper && !gamepad1.right_bumper) {
+        } else if (!gamepad1.left_bumper && !gamepad1.right_bumper) { //same as the lift mechanism to create claw increments
             rPressed = false;
         }
 
@@ -188,7 +188,7 @@ public class DefaultTeleOp extends OpMode {
         // Telemetry
         telemetry.addData("Status", "Run Time: " + runtime.toString());
         telemetry.addData("Lift Position: ", lift.getPosition());
-        telemetry.addData("Relic Position: ", relic.getPosition());
+        telemetry.addData("Relic Position: ", relic.getPosition()); //displays certain things on the phone
 //        telemetry.addData("frontLeft", drivetrain.getPosition());
 //        telemetry.addData("frontRight", drivetrain.getPosition2());
 //        telemetry.addData("rearRight", drivetrain.getPosition4());
