@@ -127,7 +127,7 @@ public class BlueLeftAuto extends OpMode {
         telemetry.addData("Position", movement.getPosition3());
         telemetry.update();
 
-
+//random comment
         if (stage != lastStage) runtime.reset();
         lastStage = stage;
 
